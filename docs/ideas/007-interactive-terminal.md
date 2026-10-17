@@ -2,7 +2,7 @@
 
 | Status | Phase | Category | Impact | Effort | Perf cost |
 | --- | --- | --- | --- | --- | --- |
-| ready | 1 · Signature | Interaction | H | M | low |
+| done | 1 · Signature | Interaction | H | M | low |
 
 **Depends on:** —
 
@@ -31,7 +31,7 @@ Base.astro <script>  ──imports──▶  terminal/index.ts   (first paint, <
                                      · listens for / and ` (not while typing in a field), [data-terminal-open] clicks
                                      · reopens if sessionStorage says it was open
                                      · import('./shell') on intent
-                                   terminal/bus.ts      (first paint, 1 line: EventTarget)
+terminal/bus.ts (1 line: EventTarget, shared by whoever imports it)
 shell.ts (lazy chunk)  ── fetch ──▶  /terminal/<lang>.json   (build-time endpoint)
   · builds a <dialog>, runs input → parse → registry → command.run(args, ctx)
   · import.meta.glob('./commands/*.ts', { eager: true }) — each module calls register()
@@ -39,7 +39,7 @@ core.ts (pure, no DOM, no imports): parse, registry, fs resolve/list, completion
 ```
 
 - **Dialog:** native `<dialog>` + `showModal()`. That gives the focus trap (page becomes inert), Escape to close, the dimmed `::backdrop`, and focus returning to the opener, with no custom code. `aria-label` from strings, `role="log"` + `aria-live="polite"` output, a 44 px close button, `data-lenis-prevent` so wheel scrolls the output instead of Lenis. Slides from the top with a CSS animation that reduced motion turns off.
-- **Event bus:** `bus.ts` exports `bus = new EventTarget()`. Events: `open`, `close`, `command:run` (`detail: { name, args, flags }`). It lives in the first-paint bundle, so 013 can listen (e.g. "opened the terminal") without loading the shell.
+- **Event bus:** `bus.ts` exports `bus = new EventTarget()`. Events: `open`, `close`, `command:run` (`detail: { name, args, flags }`). Today only the shell imports it; when 013 imports it from first-paint code, Vite moves it into that bundle and both share one instance, so 013 can listen (e.g. "opened the terminal") without loading the shell.
 - **Registry:** `register({ name, run, complete?, man?, hidden? })` in `core.ts`. A new command is a new file in `commands/`: no core edit. 013 adds `commands/achievements.ts`; 014 adds names to `themes` in `theme.ts` and the `theme` command picks them up for running and completion.
 - **ctx** given to commands: `fs`, `cwd` (segments, read/write), `data` (the JSON), `print(...parts)` (one output line; strings are text nodes with URLs/emails auto-linked, `link(text, href)` for explicit links; never `innerHTML`), `t(key)`, `lang`, `navigate(url)`, `openTab(url)` (`noopener`), `setTheme`, `reducedMotion`, `history`, `clear()`, `close()`.
 - **Filesystem:** `type Dir = { [name: string]: Dir | string }` (string = file contents). Home is the root: `/` and `~` both mean home, `..` at home stays home. `ls`, `cd`, `cat`, `tree` and path completion all work over it.
@@ -47,18 +47,18 @@ core.ts (pure, no DOM, no imports): parse, registry, fs resolve/list, completion
 - **Strings:** `term.*` keys in `ui.ts` for all three locales (the `Record<Lang, …>` type fails the build on a missing key). The endpoint ships `term.*` plus reused keys (`404.msg`, `404.hint`, `hero.role`, `lang.egg`, `theme.name`). Man pages are `term.man.<cmd>` = `usage — description`; `help` and `man` both read them.
 - **lang:** navigates to the header's language link for that locale (`a[hreflang=<l>]`), which is already built with `getRelativeLocaleUrl` and the `ui.ts` helpers, so it lands on the same page in the target locale.
 - **theme:** `theme.ts` exports `themes` and `setTheme(name)`; the header toggle and the command both use it.
-- **State:** `sessionStorage.term = { open, cwd, history }` (try/catch, history capped at 50). Reopens after navigation with history and cwd.
+- **State:** `sessionStorage.term = { open, cwd, history }` (try/catch, history capped at 50), saved after every command and on `pagehide` (the dialog's `close` event lands a task late, after a navigation may have started). Reopens after navigation with history and cwd.
 - **Unknown command:** `zsh: <404.msg>: x`, plus `<404.hint> <cmd>?` when the edit distance is ≤ 1 (≤ 2 for names longer than 4).
 
 ### File layout
 ```
 src/scripts/terminal/
   index.ts            loader (first paint)
-  bus.ts              event bus (first paint)
+  bus.ts              event bus
   core.ts             parse, register/commands, resolve/list, complete, distance
   core.test.ts        node:test unit tests
   shell.ts            dialog UI, input, history, ctx, persistence
-  shell.css           overlay styles (lazy, tokens only)
+  shell.css           overlay styles, imported `?inline` so Astro doesn't hoist them into every page
   commands/*.ts       one module per command (contact + email share one)
 src/pages/terminal/[lang].json.ts
 tests/terminal.spec.ts
@@ -76,8 +76,8 @@ Touched: `Base.astro` (import loader), `Header.astro` (`>_` button), `Hero.astro
 - **E2E** (`tests/terminal.spec.ts`): open/close via `/`, backtick, button, Escape, `exit`; focus returns to the button; `/` ignored inside inputs; every command in en/es/ca with localized output; `open` navigates and `--repo` opens a new tab; `lang` keeps the page; `sudo hire-me` lands on `#contact`; `rm -rf /` with reduced motion; keyboard-only flow (Tab completion, arrow history); axe on the open terminal; persistence across navigation; usable at 375 px.
 
 ### Budgets
-- First-paint JS unchanged apart from the loader and bus (< 1 KB) and still ≤ 60 KB.
-- Lazy terminal (JS + CSS chunks only the shell loads + the largest `/terminal/<lang>.json`) ≤ 10 KB gzipped. `check-js-size.mjs` measures first paint from the home page's HTML and its static imports, and the lazy set as every `_astro` asset no HTML page references.
+- First-paint JS unchanged apart from the loader and Vite's dynamic-import helper (≈ 0.8 KB together) and still ≤ 60 KB. Measured: 49.0 → 50.0 KB.
+- Lazy terminal (JS + CSS chunks only the shell loads + the largest `/terminal/<lang>.json`) ≤ 10 KB gzipped. Measured: 4.9 KB shell + 3.6 KB JSON = 8.5 KB. `check-js-size.mjs` measures first paint from the home page's HTML and its static imports, and the lazy set as every `_astro` asset no HTML page references.
 
 ## Guardrails
 Focus trap while open, Escape closes, `aria-live` output, works without a mouse, ≥ 44 px targets, 16 px input (no iOS zoom). Not loaded until used. Plus the budget and rules in [ARCHITECTURE.md](../ARCHITECTURE.md).
@@ -87,6 +87,6 @@ Focus trap while open, Escape closes, `aria-live` output, works without a mouse,
 - **Hero hint?** Yes, typed with the existing CSS animation, so it works without JS.
 
 ## Done when
-- [ ] All commands work in all three languages
-- [ ] Lazy chunk under 10 KB gzipped
-- [ ] Keyboard and screen-reader usable
+- [x] All commands work in all three languages
+- [x] Lazy chunk under 10 KB gzipped
+- [x] Keyboard and screen-reader usable
