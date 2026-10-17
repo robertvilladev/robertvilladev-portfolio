@@ -2,7 +2,7 @@
 
 | Status | Phase | Category | Impact | Effort | Perf cost |
 | --- | --- | --- | --- | --- | --- |
-| ready | 0 · Ship it | Delight | M | S | none |
+| done | 0 · Ship it | Delight | M | S | none |
 
 **Depends on:** —
 
@@ -28,4 +28,4 @@ Works without JS (falls back to EN, shows `/<path>` placeholder-free). Plus the 
 - ~~One 404 in EN, or pick the locale from the URL prefix?~~ Resolved: one static `404.html` in EN, locale picked from the URL prefix by a tiny inline script. Without JS it stays EN. The requested path also needs that script, since the page is static.
 
 ## Done when
-- [ ] Unknown URLs show the terminal 404 with working links home
+- [x] Unknown URLs show the terminal 404 with working links home
