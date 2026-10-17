@@ -6,10 +6,11 @@
     "dev": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
+    "test:unit": "node --test \"src/**/*.test.ts\"",
     "test:e2e": "playwright test",
     "check:size": "node scripts/check-js-size.mjs",
     "lhci": "lhci autorun",
-    "quality": "npm run check:size && npm run test:e2e && npm run lhci"
+    "quality": "npm run test:unit && npm run check:size && npm run test:e2e && npm run lhci"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
