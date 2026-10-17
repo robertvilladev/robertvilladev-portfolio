@@ -2,7 +2,7 @@
 
 | Status | Phase | Category | Impact | Effort | Perf cost |
 | --- | --- | --- | --- | --- | --- |
-| ready | 0 · Ship it | Foundation | H | S | none |
+| done | 0 · Ship it | Foundation | H | S | none |
 
 **Depends on:** —
 
@@ -33,5 +33,5 @@ Build must fail on type errors or invalid content. Plus the budget and rules in 
 - Host: Vercel.
 
 ## Done when
-- [ ] Production URL serves the site
-- [ ] Every PR gets a preview link and a green build check
+- [x] Production URL serves the site: https://robertvilladev-portfolio.vercel.app
+- [x] Every PR gets a preview link and a green build check
