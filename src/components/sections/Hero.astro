@@ -6,7 +6,6 @@ import { site } from '@/config';
 interface Props { lang: Lang; slugs: string[] }
 const { lang, slugs } = Astro.props;
 const t = useT(lang);
-const stack = 'typescript · python · react · angular · vue · node · fastapi · django · gsap';
 
 // Pixel blocks the screen breaks into during the dive (deterministic pattern, no runtime randomness).
 const COLS = 12, ROWS = 8;
@@ -26,7 +25,7 @@ const cells = Array.from({ length: COLS * ROWS }, (_, i) => {
         <h1 class="hero__name fade" style="--d:1s">{site.name}<span class="cursor ps1">_</span></h1>
         <p class="fade muted" style="--d:1.3s">{t('hero.role')}</p>
         <p class="type gap" style="--d:1.8s"><span class="ps1">~ $</span> cat stack.txt</p>
-        <p class="fade" style="--d:2.5s">{stack}</p>
+        <p class="fade" style="--d:2.5s">{site.stack}</p>
         <p class="type gap" style="--d:3s"><span class="ps1">~ $</span> ls ~/side-projects</p>
         <p class="fade hero__ls" style="--d:3.7s">{slugs.map((s) => <span>{s}/</span>)}</p>
         <p class="fade gap" style="--d:4.1s"><span class="ps1">~ $</span> <span class="cursor hero__caret" aria-hidden="true" /></p>

@@ -1,0 +1,45 @@
+/* Terminal overlay. Lazy: loaded with the shell. Colors only through tokens. */
+.tx {
+  position: fixed; inset: 0 0 auto; width: 100%; max-width: none; height: min(62svh, 560px); max-height: none;
+  margin: 0; padding: 0; border: 0; border-bottom: 2px solid var(--accent);
+  background: var(--surface); color: var(--text); font-size: 15px; line-height: 1.6;
+  box-shadow: 0 30px 90px var(--glow);
+}
+.tx[open] { display: flex; flex-direction: column; animation: tx-drop 0.3s var(--ease-out); }
+.tx::backdrop { background: rgb(0 0 0 / 0.6); }
+@keyframes tx-drop { from { transform: translateY(-100%); } }
+
+.tx__bar {
+  display: flex; align-items: center; gap: 8px; padding-left: 14px;
+  border-bottom: 1px solid var(--line); background: var(--surface-2); font-size: 12px; color: var(--muted);
+}
+.tx__dots { display: flex; gap: 8px; }
+.tx__dots i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+.tx__dots i + i { background: #febc2e; }
+.tx__dots i + i + i { background: #28c840; }
+.tx__title { flex-grow: 1; text-align: center; }
+.tx__x { min-width: 44px; min-height: 44px; border: 0; background: none; color: var(--text); font: inherit; font-size: 22px; cursor: pointer; }
+
+.tx__out { flex-grow: 1; overflow-y: auto; overscroll-behavior: contain; padding: 12px 16px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.tx__out a { text-decoration: underline; text-underline-offset: 3px; }
+.tx__form { display: flex; align-items: center; gap: 8px; padding: 0 16px 6px; }
+.tx__in { flex-grow: 1; min-width: 0; min-height: 44px; border: 0; background: none; color: var(--text); font: inherit; font-size: 16px; caret-color: var(--accent); }
+.tx__in:focus-visible { outline: 0; }
+.tx__form:focus-within { box-shadow: inset 0 -2px var(--accent); }
+
+.tx__ps1, .tx__dir { color: var(--accent); }
+.tx__err { color: var(--accent-2); }
+.tx__mute { color: var(--muted); }
+
+/* rm -rf / */
+@keyframes tx-melt {
+  0%, 100% { transform: none; filter: none; }
+  20% { transform: translate(-6px, 3px) skewX(4deg); filter: hue-rotate(90deg) saturate(3); }
+  40% { transform: translate(5px, -4px); clip-path: inset(10% 0 30% 0); }
+  60% { transform: translate(-3px, 6px) skewX(-6deg); filter: invert(1); }
+  80% { transform: translate(4px, 0); clip-path: inset(40% 0 5% 0); }
+}
+.tx-melt main, .tx-melt .header, .tx-melt .tx { animation: tx-melt 0.25s steps(2) infinite; }
+
+@media (max-width: 720px) { .tx { height: 52svh; font-size: 14px; } }
+@media (prefers-reduced-motion: reduce) { .tx[open] { animation: none; } }
