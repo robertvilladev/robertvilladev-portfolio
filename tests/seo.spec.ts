@@ -19,6 +19,7 @@ const pages = readdirSync('dist', { recursive: true, encoding: 'utf8' })
       title: html.match(/<title>(.*?)<\/title>/s)?.[1],
       description: html.match(/<meta name="description" content="(.*?)"/s)?.[1],
       ld,
+      meta: (prop: string) => html.match(new RegExp(`<meta (?:property|name)="${prop}" content="(.*?)"`))?.[1],
     };
   });
 const homes = pages.filter((p) => p.path === '/' || /^\/(es|ca)\/$/.test(p.path));
@@ -68,4 +69,17 @@ test('every page has a title and description, unique within its locale', () => {
   const homeTitles = homes.map((h) => h.title);
   expect(new Set(homeTitles).size).toBe(langs.length);
   expect(new Set(homes.map((h) => h.description)).size).toBe(langs.length);
+});
+
+test('every page has an og:image pointing at an existing 1200x630 file', () => {
+  for (const p of pages) {
+    const img = p.meta('og:image')!;
+    expect(img, p.path).toMatch(/^https:\/\/.+\.png$/);
+    const file = readFileSync('dist' + new URL(img).pathname);
+    expect([file.readUInt32BE(16), file.readUInt32BE(20)], img).toEqual([1200, 630]);
+    expect(p.meta('og:image:alt'), p.path).toBeTruthy();
+    expect(p.meta('twitter:card'), p.path).toBe('summary_large_image');
+  }
+  // 404 falls back to the home card
+  expect(readFileSync('dist/404.html', 'utf8')).toMatch(/og:image" content="[^"]*\/og\/en\/home\.png"/);
 });

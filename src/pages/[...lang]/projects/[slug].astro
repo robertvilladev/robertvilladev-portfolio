@@ -17,7 +17,7 @@ const { title, summary, stack, pid, repo, demo } = entry.data;
 const { Content } = await render(entry);
 ---
 
-<Base lang={lang} path={`projects/${slug}`} title={title} description={summary} jsonLd={projectLd(lang, Astro.site!, new URL(getRelativeLocaleUrl(lang, `projects/${slug}`), Astro.site).href, entry)}>
+<Base lang={lang} path={`projects/${slug}`} title={title} description={summary} image={`${lang}/${slug}`} jsonLd={projectLd(lang, Astro.site!, new URL(getRelativeLocaleUrl(lang, `projects/${slug}`), Astro.site).href, entry)}>
   <section class="detail pixgrid">
     <div class="container stack">
       <a class="back mono" href={`${getRelativeLocaleUrl(lang)}#projects`}>&lt; {t('project.back')}</a>
