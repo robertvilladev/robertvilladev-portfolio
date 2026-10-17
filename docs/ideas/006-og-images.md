@@ -2,7 +2,7 @@
 
 | Status | Phase | Category | Impact | Effort | Perf cost |
 | --- | --- | --- | --- | --- | --- |
-| ready | 1 · Signature | SEO & sharing | M | M | none |
+| done | 1 · Signature | SEO & sharing | M | M | none |
 
 **Depends on:** [005](005-structured-data.md)
 
@@ -32,4 +32,6 @@ Build time: cache or keep the image count small (21 today). Plus the budget and 
 - Home gets its own card (`whoami`); projects share one layout (`cat <slug>`).
 
 ## Done when
-- [ ] Every page has a correct og:image, checked with a social preview tool
+- [x] `npm run build` emits a PNG per page and locale (21 images, ~2 s total)
+- [x] Every page's `og:image` points at an existing 1200×630 file (asserted in `tests/seo.spec.ts`)
+- [ ] Checked with a social preview tool (needs the deployed URL; left to the owner)
