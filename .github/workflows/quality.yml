@@ -52,7 +52,8 @@ jobs:
           url=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --jq '[.[] | select(.user.login == "vercel[bot]")][-1].body' | grep -o 'https://[a-z0-9-]*\.vercel\.app' | head -1)
           [ -n "$url" ] || { echo "No preview URL in the Vercel comment"; exit 1; }
           echo "url=$url" >> "$GITHUB_OUTPUT"
-      # Previews sit behind Vercel Authentication (bypass header) and are served with
+      # Previews sit behind Vercel Authentication (bypass header, plus the cookie for side requests
+      # like robots.txt that skip extraHeaders) and are served with
       # X-Robots-Tag: noindex, so is-crawlable is skipped there; the dist/ run on main still checks it.
       - name: Lighthouse budget (Vercel preview)
         if: github.event_name == 'pull_request'
@@ -61,12 +62,13 @@ jobs:
           BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: >-
           npx lhci autorun --collect.staticDistDir= --collect.url="$U/" --collect.url="$U/projects/gotdle/"
-          --collect.settings.extraHeaders="{\"x-vercel-protection-bypass\":\"$BYPASS\"}"
+          --collect.settings.extraHeaders="{\"x-vercel-protection-bypass\":\"$BYPASS\",\"x-vercel-set-bypass-cookie\":\"true\"}"
           --collect.settings.skipAudits=is-crawlable
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: quality-reports
+          include-hidden-files: true
           path: |
             playwright-report/
             test-results/
