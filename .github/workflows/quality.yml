@@ -1,0 +1,34 @@
+name: Quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: JS size budget
+        run: npm run check:size
+      - run: npx playwright install --with-deps chromium
+      - name: Smoke, overflow, reduced motion, axe
+        run: npm run test:e2e
+      # Runs against dist/ for now; point at the Vercel preview URL once 002 lands.
+      - name: Lighthouse budget
+        run: npm run lhci
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-reports
+          path: |
+            playwright-report/
+            test-results/
+            .lighthouseci/
