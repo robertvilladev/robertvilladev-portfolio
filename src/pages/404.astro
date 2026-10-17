@@ -1,0 +1,49 @@
+---
+import Base from '@/layouts/Base.astro';
+import Terminal from '@/components/ui/Terminal.astro';
+import { ui, langs, defaultLang, t as useT } from '@/i18n/ui';
+
+// One static 404.html: EN by default, the inline script below swaps in the locale from the URL prefix.
+const t = useT(defaultLang);
+const home = (l: string) => (l === defaultLang ? '/' : `/${l}/`);
+const strings = JSON.stringify(
+  Object.fromEntries(langs.map((l) => [l, { ...Object.fromEntries(Object.entries(ui[l]).filter(([k]) => k.startsWith('404.'))), home: home(l) }])),
+);
+---
+
+<Base lang={defaultLang} title={t('404.title')}>
+  <section class="nf">
+    <Terminal title="zsh — 404" class="nf__term">
+      <div class="nf__body mono">
+        <p><span class="prompt">$</span> <span id="nf-cmd" class="hl">/</span></p>
+        <p class="nf__err">zsh: <span data-k="msg">{t('404.msg')}</span>: <span id="nf-path">/</span></p>
+        <p class="nf__hint"><span data-k="hint">{t('404.hint')}</span>:</p>
+        <p><span class="prompt">$</span> <a id="nf-home" href="/">cd ~</a> <span class="nf__c">// <span data-k="home">{t('404.home')}</span></span></p>
+        <p><span class="prompt">$</span> <a id="nf-projects" href="/#projects">ls projects</a> <span class="nf__c">// <span data-k="projects">{t('404.projects')}</span></span></p>
+      </div>
+    </Terminal>
+  </section>
+  <script is:inline define:vars={{ strings }}>
+    (() => {
+      const S = JSON.parse(strings);
+      const p = location.pathname;
+      const l = (p.match(/^\/(es|ca)(\/|$)/) || [])[1] || 'en';
+      const $ = (id) => document.getElementById(id);
+      document.documentElement.lang = l;
+      document.querySelectorAll('[data-k]').forEach((e) => (e.textContent = S[l]['404.' + e.dataset.k]));
+      $('nf-path').textContent = p;
+      $('nf-cmd').textContent = p.split('/').pop() || p;
+      $('nf-home').href = S[l].home;
+      $('nf-projects').href = S[l].home + '#projects';
+    })();
+  </script>
+</Base>
+
+<style>
+  .nf { min-height: 70vh; display: grid; place-items: center; padding: 120px 16px 48px; }
+  .nf :global(.nf__term) { width: min(560px, 100%); }
+  .nf__body { padding: 20px; font-size: 14px; display: grid; gap: 10px; overflow-wrap: anywhere; }
+  .nf__body p { margin: 0; }
+  .nf__err { color: var(--accent-2); }
+  .nf__hint, .nf__c { color: var(--muted); }
+</style>
