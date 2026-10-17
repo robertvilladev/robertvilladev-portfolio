@@ -1,7 +1,7 @@
 ---
-import Terminal from './Terminal.astro';
-import { t as useT, type Lang } from '../i18n/ui';
-import { site } from '../config';
+import Terminal from '@/components/ui/Terminal.astro';
+import { t as useT, type Lang } from '@/i18n/ui';
+import { site } from '@/config';
 
 interface Props { lang: Lang; slugs: string[] }
 const { lang, slugs } = Astro.props;

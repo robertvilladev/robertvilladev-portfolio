@@ -1,6 +1,16 @@
-export const languages = { en: 'EN', es: 'ES', ca: 'CA' } as const;
+// Single source of locales: astro.config, routes, hreflang and the switcher all read this.
+// Adding a language = add it here, add its `ui` block below and its content/projects/<lang>/ folder.
+export const languages = {
+  en: { label: 'EN', og: 'en_US' },
+  es: { label: 'ES', og: 'es_ES' },
+  ca: { label: 'CA', og: 'ca_ES' },
+} as const;
 export type Lang = keyof typeof languages;
 export const defaultLang: Lang = 'en';
+export const langs = Object.keys(languages) as Lang[];
+
+/** Route param for `[...lang]` pages: the default locale lives at the root. */
+export const langParam = (lang: Lang) => (lang === defaultLang ? undefined : lang);
 
 const en = {
   'meta.title': 'Robert Villa — Fullstack developer',

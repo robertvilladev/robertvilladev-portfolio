@@ -1,7 +1,7 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { languages, t as useT, type Lang } from '../i18n/ui';
-import { site } from '../config';
+import { languages, langs, t as useT, type Lang } from '@/i18n/ui';
+import { site } from '@/config';
 
 interface Props { lang: Lang; path: string }
 const { lang, path } = Astro.props;
@@ -23,9 +23,9 @@ const links = [
         {links.map(([id, label]) => <li><a class="navlink" href={`${home}#${id}`}>{label}</a></li>)}
       </ul>
       <div class="lang" role="group" aria-label={t('lang.label')}>
-        {(Object.keys(languages) as Lang[]).map((l) => (
+        {langs.map((l) => (
           <a href={getRelativeLocaleUrl(l, path)} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
-            {languages[l]}
+            {languages[l].label}
           </a>
         ))}
       </div>

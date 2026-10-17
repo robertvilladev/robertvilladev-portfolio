@@ -1,7 +1,7 @@
 ---
-import ProjectCard from './ProjectCard.astro';
-import type { Project } from '../lib/projects';
-import { t as useT, type Lang } from '../i18n/ui';
+import ProjectCard from '@/components/ui/ProjectCard.astro';
+import type { Project } from '@/lib/projects';
+import { t as useT, type Lang } from '@/i18n/ui';
 
 interface Props { lang: Lang; projects: Project[] }
 const { lang, projects } = Astro.props;

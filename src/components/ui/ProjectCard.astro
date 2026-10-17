@@ -1,7 +1,7 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { slugOf, type Project } from '../lib/projects';
-import { t as useT, type Lang } from '../i18n/ui';
+import { slugOf, type Project } from '@/lib/projects';
+import { t as useT, type Lang } from '@/i18n/ui';
 
 interface Props { project: Project; lang: Lang }
 const { project, lang } = Astro.props;

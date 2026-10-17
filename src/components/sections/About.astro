@@ -1,6 +1,6 @@
 ---
-import Terminal from './Terminal.astro';
-import { t as useT, type Lang } from '../i18n/ui';
+import Terminal from '@/components/ui/Terminal.astro';
+import { t as useT, type Lang } from '@/i18n/ui';
 
 interface Props { lang: Lang }
 const t = useT(Astro.props.lang);

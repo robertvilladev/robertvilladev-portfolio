@@ -1,10 +1,12 @@
 ---
 import { render } from 'astro:content';
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import Base from '../layouts/Base.astro';
-import Terminal from '../components/Terminal.astro';
-import { slugOf, type Project } from '../lib/projects';
-import { t as useT, type Lang } from '../i18n/ui';
+import Base from '@/layouts/Base.astro';
+import Terminal from '@/components/ui/Terminal.astro';
+import { slugOf, projectPaths, type Project } from '@/lib/projects';
+import { t as useT, type Lang } from '@/i18n/ui';
+
+export const getStaticPaths = projectPaths;
 
 interface Props { lang: Lang; entry: Project }
 const { lang, entry } = Astro.props;
