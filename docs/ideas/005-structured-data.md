@@ -2,7 +2,7 @@
 
 | Status | Phase | Category | Impact | Effort | Perf cost |
 | --- | --- | --- | --- | --- | --- |
-| ready | 1 · Signature | SEO & sharing | M | S | none |
+| done | 1 · Signature | SEO & sharing | M | S | none |
 
 **Depends on:** —
 
@@ -33,7 +33,7 @@ Zero runtime JS (JSON-LD is inert). Plus the budget and rules in [ARCHITECTURE.m
 - Titles and descriptions? Audit by test: every page has one, unique within its locale; home differs per locale. 404 keeps the default description.
 
 ## Done when
-- [ ] JSON-LD parses and has the required fields on home (each locale) and project pages (tested in `tests/seo.spec.ts`)
-- [ ] `robots.txt` points at the sitemap
-- [ ] Titles and descriptions present and unique per locale (tested)
+- [x] JSON-LD parses and has the required fields on home (each locale) and project pages (tested in `tests/seo.spec.ts`)
+- [x] `robots.txt` points at the sitemap
+- [x] Titles and descriptions present and unique per locale (tested)
 - [ ] Google Rich Results test passes for home and one project page (run against the Vercel preview)

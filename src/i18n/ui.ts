@@ -16,6 +16,7 @@ const en = {
   'meta.title': 'Robert Villa — Fullstack developer',
   'meta.description':
     'Fullstack developer building web apps, APIs and motion with TypeScript and Python. Side projects built to understand how systems work.',
+  'meta.jobTitle': 'Fullstack developer',
   'nav.projects': './projects',
   'nav.about': './about',
   'nav.log': './log',
@@ -61,6 +62,7 @@ export const ui: Record<Lang, Record<UiKey, string>> = {
     'meta.title': 'Robert Villa — Desarrollador fullstack',
     'meta.description':
       'Desarrollador fullstack que construye apps web, APIs y animación con TypeScript y Python. Proyectos personales para entender cómo funcionan los sistemas.',
+    'meta.jobTitle': 'Desarrollador fullstack',
     'nav.projects': './proyectos',
     'nav.about': './sobre-mí',
     'nav.log': './log',
@@ -101,6 +103,7 @@ export const ui: Record<Lang, Record<UiKey, string>> = {
     'meta.title': 'Robert Villa — Desenvolupador fullstack',
     'meta.description':
       'Desenvolupador fullstack que construeix apps web, APIs i animació amb TypeScript i Python. Projectes personals per entendre com funcionen els sistemes.',
+    'meta.jobTitle': 'Desenvolupador fullstack',
     'nav.projects': './projectes',
     'nav.about': './sobre-mi',
     'nav.log': './log',

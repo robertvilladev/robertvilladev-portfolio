@@ -6,6 +6,8 @@ import Projects from '@/components/sections/Projects.astro';
 import Timeline from '@/components/sections/Timeline.astro';
 import Contact from '@/components/sections/Contact.astro';
 import { getProjects, slugOf } from '@/lib/projects';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { personLd } from '@/lib/jsonld';
 import { langs, langParam, type Lang } from '@/i18n/ui';
 
 export const getStaticPaths = () => langs.map((lang) => ({ params: { lang: langParam(lang) }, props: { lang } }));
@@ -15,7 +17,7 @@ const { lang } = Astro.props;
 const projects = await getProjects(lang);
 ---
 
-<Base lang={lang}>
+<Base lang={lang} jsonLd={personLd(lang, Astro.site!, new URL(getRelativeLocaleUrl(lang), Astro.site).href)}>
   <Hero lang={lang} slugs={projects.map(slugOf)} />
   <About lang={lang} />
   <Projects lang={lang} projects={projects} />
