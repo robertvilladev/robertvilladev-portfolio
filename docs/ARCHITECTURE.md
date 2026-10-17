@@ -18,7 +18,9 @@ src/
     layout/                 Header, Footer, Background: on every page
     sections/               home page sections, one per file, each owns its id
     ui/                     reusable pieces (Terminal window, ProjectCard)
+  pages/terminal/           /terminal/<lang>.json: the interactive terminal's data, built from site content
   scripts/                  client-side TS: theme, motion, sparkle
+  scripts/terminal/         interactive terminal (007): tiny first-paint loader, lazy shell, one file per command
   styles/                   tokens.css (design tokens, dark + light), global.css (utilities)
 ```
 
@@ -45,14 +47,20 @@ Imports use the `@/` alias (`@/components/ui/Terminal.astro`), never `../`.
 - Colors only through tokens in `styles/tokens.css`; every token has a light-theme value.
 - Component styles are scoped `<style>` in the component. Shared utilities go in `global.css`.
 
+**Terminal**
+- A new command is one file in `scripts/terminal/commands/` that calls `register({ name, run, complete?, man?, hidden? })`; its `term.man.<name>` string (`usage — description`) goes in `ui.ts`. No core edit.
+- Listen to `bus` from `scripts/terminal/bus.ts` (`open`, `close`, `command:run`) to react to the terminal without loading it.
+- Command output goes through `ctx.print`/`ctx.error` (text nodes and links only, never `innerHTML`).
+
 ## Performance budget
 
-Measured on the home page, gzipped. Current: about 49 KB JS, 7 KB CSS, 5 KB HTML.
+Measured on the home page, gzipped. Current: about 50 KB JS, 7 KB CSS, 5 KB HTML. `npm run check:size` enforces both JS rows.
 
 | Budget | Limit |
 | --- | --- |
 | JS loaded on first paint | ≤ 60 KB |
 | Any feature not needed for first paint | loaded with dynamic `import()` on intent (key press, click, in view) |
+| Lazy terminal (shell chunk + one `/terminal/<lang>.json`) | ≤ 10 KB |
 | Lighthouse (mobile) | Performance ≥ 95, Accessibility ≥ 95, SEO 100 |
 | CLS | 0 (animations use transform/opacity/clip-path only) |
 | Images | `astro:assets`, AVIF/WebP, explicit size, lazy below the fold |

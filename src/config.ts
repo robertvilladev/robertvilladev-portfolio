@@ -3,6 +3,7 @@ export const site = {
   name: 'Robert Villa',
   handle: 'rv@dev',
   location: 'Barcelona',
+  stack: 'typescript · python · react · angular · vue · node · fastapi · django · gsap',
   github: 'https://github.com/robertvilladev',
   linkedin: 'https://www.linkedin.com/in/robertvillalopez/',
   email: 'stamek.ts@gmail.com' as string | null,

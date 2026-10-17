@@ -29,6 +29,9 @@ const links = [
           </a>
         ))}
       </div>
+      <button class="term" type="button" data-terminal-open aria-haspopup="dialog" aria-label={t('term.open')} title={t('term.open')}>
+        <span aria-hidden="true">&gt;_</span>
+      </button>
       <button class="theme" type="button" data-theme-toggle title={t('theme.label')}>
         <span class="theme__swatch" aria-hidden="true"></span>{t('theme.name')}: <span data-theme-name>dark</span>
       </button>
@@ -65,6 +68,11 @@ const links = [
     border: 1px solid var(--line); background: var(--surface); color: var(--text);
     font: inherit; font-size: 13px; cursor: pointer;
   }
+  .term {
+    min-width: 44px; min-height: 44px; border: 1px solid var(--line); background: var(--surface);
+    color: var(--accent); font: inherit; font-weight: 700; cursor: pointer;
+  }
+  .term:hover { border-color: var(--accent); }
   .theme__swatch { width: 12px; height: 12px; border: 2px solid var(--accent); background: var(--bg); }
   /* Own row on phones, so the late web font can't re-wrap the header and shift the page (CLS). */
   @media (max-width: 720px) { .nav__links { display: none; } .nav__right { flex-basis: 100%; } }

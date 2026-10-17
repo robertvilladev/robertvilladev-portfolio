@@ -23,7 +23,7 @@ Every planned feature, in build order. Each row links to its spec in [ideas/](id
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 005 | [Structured data and SEO basics](ideas/005-structured-data.md) | SEO & sharing | M | S | none | — | done |
 | 006 | [Generated share images](ideas/006-og-images.md) | SEO & sharing | M | M | none | [005](ideas/005-structured-data.md) | done |
-| 007 | [Interactive terminal](ideas/007-interactive-terminal.md) | Interaction | H | M | low | — | idea |
+| 007 | [Interactive terminal](ideas/007-interactive-terminal.md) | Interaction | H | M | low | — | done |
 | 008 | [Page transitions](ideas/008-view-transitions.md) | Interaction | H | S | low | — | idea |
 
 ## Phase 2 · Real content
