@@ -3,6 +3,7 @@ import { render } from 'astro:content';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import Base from '@/layouts/Base.astro';
 import Terminal from '@/components/ui/Terminal.astro';
+import { projectLd } from '@/lib/jsonld';
 import { slugOf, projectPaths, type Project } from '@/lib/projects';
 import { t as useT, type Lang } from '@/i18n/ui';
 
@@ -16,7 +17,7 @@ const { title, summary, stack, pid, repo, demo } = entry.data;
 const { Content } = await render(entry);
 ---
 
-<Base lang={lang} path={`projects/${slug}`} title={title} description={summary}>
+<Base lang={lang} path={`projects/${slug}`} title={title} description={summary} jsonLd={projectLd(lang, Astro.site!, new URL(getRelativeLocaleUrl(lang, `projects/${slug}`), Astro.site).href, entry)}>
   <section class="detail pixgrid">
     <div class="container stack">
       <a class="back mono" href={`${getRelativeLocaleUrl(lang)}#projects`}>&lt; {t('project.back')}</a>

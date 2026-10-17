@@ -14,9 +14,11 @@ interface Props {
   path?: string;
   title?: string;
   description?: string;
+  /** schema.org object, rendered as inert JSON-LD (no runtime JS). */
+  jsonLd?: Record<string, unknown>;
 }
 
-const { lang, path = '', title, description } = Astro.props;
+const { lang, path = '', title, description, jsonLd } = Astro.props;
 const t = useT(lang);
 const pageTitle = title ? `${title} · Robert Villa` : t('meta.title');
 const pageDescription = description ?? t('meta.description');
@@ -42,6 +44,7 @@ const urlFor = (l: Lang) => new URL(getRelativeLocaleUrl(l, path), Astro.site).h
     <meta property="og:url" content={urlFor(lang)} />
     <meta property="og:locale" content={languages[lang].og} />
     <meta name="twitter:card" content="summary" />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
     <script is:inline>
       // Runs before paint so the saved theme never flashes.
       try {
