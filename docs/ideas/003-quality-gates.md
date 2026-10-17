@@ -32,7 +32,7 @@ Every budget **fails** the PR from day one (decided: the site sits at ~49 KB JS,
 - **Lighthouse CI**: `@lhci/cli` with `lighthouserc.json`, `staticDistDir: dist`, home + one project page, mobile preset, 3 runs. Assertions (error level): Performance ≥ 0.95, Accessibility ≥ 0.95, SEO = 1, CLS ≤ 0.001 (what Lighthouse displays as 0; the font swap still nudges glyph widths by ~0.0002). Locally set `CHROME_PATH` if no Chrome is installed (Playwright's Chromium works).
 - **Scripts**: `npm run test:e2e`, `npm run check:size`, `npm run lhci`, and `npm run quality` running all three after a build.
 - axe runs with reduced motion so it scans the settled page (mid-animation opacity made contrast results flaky).
-- **CI**: `.github/workflows/quality.yml` (separate from 002's `ci.yml`): build once, then size check, Playwright, LHCI. LHCI runs against `dist/` for now; pointing it at the Vercel preview URL waits on 002.
+- **CI**: `.github/workflows/quality.yml` (separate from 002's `ci.yml`): build once, then size check, Playwright, LHCI. On PRs, LHCI runs against the Vercel preview: Vercel posts only a `Vercel` commit status (no GitHub deployments), so the job polls that status for the head SHA, takes the preview URL from the Vercel bot comment, and sends the `VERCEL_AUTOMATION_BYPASS_SECRET` repo secret as `x-vercel-protection-bypass` (previews sit behind Vercel Authentication). Previews are served with `X-Robots-Tag: noindex`, so `is-crawlable` is skipped there. Pushes to `main` keep the `dist/` run, which still checks crawlability.
 
 ## What the gates found (fixed while building)
 - Light theme: `--accent` `#00806f` → `#00766a` and `--hash` `#9a6a00` → `#8f6200`, both were just under 4.5:1.
@@ -45,4 +45,4 @@ Every budget **fails** the PR from day one (decided: the site sits at ~49 KB JS,
 - [x] CI fails when a locale page is missing, overflow appears, or the budget is exceeded
 - [x] Reduced-motion and axe checks pass on the current site
 - [x] Each check shown failing when broken on purpose
-- [ ] Lighthouse runs against the Vercel preview (follow-up now that 002 is live)
+- [x] Lighthouse runs against the Vercel preview
