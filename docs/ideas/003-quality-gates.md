@@ -45,4 +45,4 @@ Every budget **fails** the PR from day one (decided: the site sits at ~49 KB JS,
 - [x] CI fails when a locale page is missing, overflow appears, or the budget is exceeded
 - [x] Reduced-motion and axe checks pass on the current site
 - [x] Each check shown failing when broken on purpose
-- [ ] Lighthouse runs against the Vercel preview (waits on 002)
+- [ ] Lighthouse runs against the Vercel preview (follow-up now that 002 is live)
