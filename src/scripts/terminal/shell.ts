@@ -2,7 +2,7 @@
 // input → parse → registry, history, completion, and state that survives navigation.
 // Lazy: loaded by ./index.ts on first intent, data fetched from /terminal/<lang>.json.
 import css from './shell.css?inline'; // ?inline: Astro would otherwise hoist it into every page's HTML
-import { commands, complete, parse, pathString, resolve, suggest, type Ctx, type Part, type TermData } from './core';
+import { commands, complete, parse, pathString, resolve, suggest, type Command, type Ctx, type Part, type TermData } from './core';
 import { bus } from './bus';
 import { setTheme } from '@/scripts/theme';
 
@@ -58,6 +58,8 @@ function build(data: TermData): Ctx {
       out.scrollTop = out.scrollHeight;
       return line;
     },
+    error: (text) => void (ctx.print(text).className = 'tx__err'),
+    usage: () => current?.man && ctx.error(`${t('term.usage')}: ${t(current.man).split(' — ')[0]}`),
     t,
     navigate: (url) => location.assign(url),
     openTab: (url) => void window.open(url, '_blank', 'noopener'),
@@ -67,6 +69,7 @@ function build(data: TermData): Ctx {
   };
 
   let pos = ctx.history.length;
+  let current: Command | undefined;
   const prompt = () => `${pathString(ctx.cwd)} $`;
   save = () => {
     try { sessionStorage.setItem(KEY, JSON.stringify({ open: dialog.open, cwd: ctx.cwd, history: ctx.history })); } catch {}
@@ -88,12 +91,12 @@ function build(data: TermData): Ctx {
     if (line) ctx.history.splice(0, ctx.history.push(line) - 50);
     pos = ctx.history.length;
     const a = parse(line);
-    const cmd = commands.get(a.name);
+    const cmd = (current = commands.get(a.name));
     if (cmd) {
       bus.dispatchEvent(new CustomEvent('command:run', { detail: a }));
-      try { await cmd.run(a, ctx); } catch (e) { ctx.print(String(e)).className = 'tx__err'; }
+      try { await cmd.run(a, ctx); } catch (e) { ctx.error(String(e)); }
     } else if (a.name) {
-      ctx.print(`zsh: ${t('404.msg')}: ${a.name}`).className = 'tx__err';
+      ctx.error(`zsh: ${t('404.msg')}: ${a.name}`);
       const s = suggest(a.name, commands.keys());
       if (s) ctx.print(`${t('404.hint')} ${s}?`);
     }

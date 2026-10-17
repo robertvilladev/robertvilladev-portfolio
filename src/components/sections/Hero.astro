@@ -28,7 +28,7 @@ const cells = Array.from({ length: COLS * ROWS }, (_, i) => {
         <p class="fade" style="--d:2.5s">{site.stack}</p>
         <p class="type gap" style="--d:3s"><span class="ps1">~ $</span> ls ~/side-projects</p>
         <p class="fade hero__ls" style="--d:3.7s">{slugs.map((s) => <span>{s}/</span>)}</p>
-        <p class="fade gap" style="--d:4.1s"><span class="ps1">~ $</span> <span class="cursor hero__caret" aria-hidden="true" /></p>
+        <p class="fade gap" style="--d:4.1s"><span class="ps1">~ $</span> <span class="type hero__hint" style="--d:4.5s"><span class="hint-key">{t('hero.hint')}</span><span class="hint-touch">{t('hero.hint.touch')}</span></span> <span class="cursor hero__caret" aria-hidden="true" /></p>
       </div>
     </Terminal>
 
@@ -54,6 +54,9 @@ const cells = Array.from({ length: COLS * ROWS }, (_, i) => {
   .hero__name { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 7vw, 88px); line-height: 1; letter-spacing: -0.02em; margin: 12px 0 8px; }
   .hero__ls { display: flex; flex-wrap: wrap; gap: 4px 24px; color: var(--accent-2); }
   .hero__caret { display: inline-block; width: 10px; height: 20px; background: var(--accent); vertical-align: -3px; }
+  .hero__hint { display: inline-block; color: var(--muted); }
+  .hint-touch { display: none; }
+  @media (hover: none) { .hint-key { display: none; } .hint-touch { display: inline; } }
   .ps1 { color: var(--accent); }
   .muted { color: var(--muted); }
   .gap { margin-top: 16px; }

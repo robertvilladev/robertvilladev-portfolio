@@ -30,6 +30,9 @@ export interface Ctx {
   history: string[];
   reducedMotion: boolean;
   print(...parts: Part[]): HTMLElement;
+  error(text: string): void;
+  /** Prints `usage: …` for the running command. */
+  usage(): void;
   t(key: string): string;
   navigate(url: string): void;
   openTab(url: string): void;
@@ -80,6 +83,12 @@ export function resolve(fs: Dir, cwd: string[], path = ''): string[] | null {
     else if (s && s !== '.') segs.push(s);
   }
   return nodeAt(fs, segs) === undefined ? null : segs;
+}
+
+/** The node at `path` from `cwd` (undefined if missing) and its absolute segments. */
+export function stat(fs: Dir, cwd: string[], path: string) {
+  const at = resolve(fs, cwd, path);
+  return { at, node: at ? nodeAt(fs, at) : undefined };
 }
 
 export const pathString = (segs: string[]) => ['~', ...segs].join('/');
