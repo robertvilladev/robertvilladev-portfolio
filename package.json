@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro check && astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "test:e2e": "playwright test",
+    "check:size": "node scripts/check-js-size.mjs",
+    "lhci": "lhci autorun",
+    "quality": "npm run check:size && npm run test:e2e && npm run lhci"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
@@ -17,6 +21,9 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@axe-core/playwright": "^4.14.0",
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.64.1",
     "typescript": "^6.0.3"
   }
 }

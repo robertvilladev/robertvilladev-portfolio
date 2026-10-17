@@ -4,3 +4,6 @@ dist/
 .env
 .DS_Store
 .vercel/
+test-results/
+playwright-report/
+.lighthouseci/

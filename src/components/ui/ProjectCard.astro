@@ -11,7 +11,7 @@ const { title, summary, stack, pid } = project.data;
 ---
 
 <li class="cell" data-zoom>
-  <a class="card" href={getRelativeLocaleUrl(lang, `projects/${slug}`)} aria-label={`${t('projects.open')}: ${title}`}>
+  <a class="card" href={getRelativeLocaleUrl(lang, `projects/${slug}`)}>
     <div class="card__bar mono">
       <span>PID {pid}</span>
       <span class="card__slug">{slug}</span>
