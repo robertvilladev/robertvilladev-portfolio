@@ -13,7 +13,7 @@ Every planned feature, in build order. Each row links to its spec in [ideas/](id
 | # | Item | Category | Impact | Effort | Perf | Depends on | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 001 | [Content gaps](ideas/001-content-gaps.md) | Foundation | H | S | none | — | idea |
-| 002 | [Deploy and CI](ideas/002-deploy-and-ci.md) | Foundation | H | S | none | — | ready |
+| 002 | [Deploy and CI](ideas/002-deploy-and-ci.md) | Foundation | H | S | none | — | done |
 | 003 | [Quality gates](ideas/003-quality-gates.md) | Foundation | H | M | none | [002](ideas/002-deploy-and-ci.md) | idea |
 | 004 | [Terminal 404 page](ideas/004-terminal-404.md) | Delight | M | S | none | — | idea |
 
