@@ -1,0 +1,68 @@
+---
+import '@fontsource-variable/jetbrains-mono';
+import '@fontsource-variable/space-grotesk';
+import '../styles/global.css';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import Header from '../components/Header.astro';
+import Background from '../components/Background.astro';
+import Footer from '../components/Footer.astro';
+import { languages, defaultLang, t as useT, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  /** Locale-less path, e.g. '' for home or 'projects/sudoku-2077'. Used for canonical + language switch. */
+  path?: string;
+  title?: string;
+  description?: string;
+}
+
+const { lang, path = '', title, description } = Astro.props;
+const t = useT(lang);
+const pageTitle = title ? `${title} · Robert Villa` : t('meta.title');
+const pageDescription = description ?? t('meta.description');
+const urlFor = (l: Lang) => new URL(getRelativeLocaleUrl(l, path), Astro.site).href;
+---
+
+<!doctype html>
+<html lang={lang} data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={urlFor(lang)} />
+    {Object.keys(languages).map((l) => <link rel="alternate" hreflang={l} href={urlFor(l as Lang)} />)}
+    <link rel="alternate" hreflang="x-default" href={urlFor(defaultLang)} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#0c0a18" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={urlFor(lang)} />
+    <meta property="og:locale" content={{ en: 'en_US', es: 'es_ES', ca: 'ca_ES' }[lang]} />
+    <meta name="twitter:card" content="summary" />
+    <script is:inline>
+      // Runs before paint so the saved theme never flashes.
+      try {
+        const saved = localStorage.getItem('theme');
+        document.documentElement.dataset.theme =
+          saved ?? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t('nav.skip')}</a>
+    <Background />
+    <Header lang={lang} path={path} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <script>
+      import '../scripts/theme';
+      import '../scripts/motion';
+      import '../scripts/sparkle';
+    </script>
+  </body>
+</html>

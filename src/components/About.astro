@@ -1,0 +1,46 @@
+---
+import Terminal from './Terminal.astro';
+import { t as useT, type Lang } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const t = useT(Astro.props.lang);
+const skills = [
+  { dir: 'frontend/', items: 'react · angular · vue · next.js · astro · typescript' },
+  { dir: 'backend/', items: 'node · express · fastify · fastapi · django rest · postgresql' },
+  { dir: 'motion/', items: 'gsap · scrolltrigger · css animation · phaser' },
+];
+---
+
+<section id="about" class="section">
+  <div class="container about">
+    <div class="about__text" data-reveal>
+      <p class="prompt">~ $ cat about.md</p>
+      <h2 class="h2">{t('about.title.a')} <span class="hl">{t('about.title.b')}</span>.</h2>
+      <p class="lead">{t('about.body')}</p>
+    </div>
+    <Terminal title="~ $ ls -la ~/skills" class="about__skills" data-parallax="0.06">
+      <ul class="skills mono">
+        {skills.map((s) => (
+          <li data-reveal>
+            <span class="perm">drwxr-x</span> <span class="dir">{s.dir}</span>
+            <span class="items">{s.items}</span>
+          </li>
+        ))}
+        <li data-reveal>
+          <span class="perm">-rw-r--</span> <span class="file">curiosity.lock</span>
+          <span class="items">{t('about.curiosity')}</span>
+        </li>
+      </ul>
+    </Terminal>
+  </div>
+</section>
+
+<style>
+  .about { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: clamp(40px, 6vw, 64px); align-items: start; }
+  .about__text { display: flex; flex-direction: column; gap: 24px; }
+  .skills { list-style: none; margin: 0; padding: 20px 24px; display: flex; flex-direction: column; gap: 20px; font-size: 14px; line-height: 1.9; }
+  .perm { color: var(--muted); }
+  .dir { color: var(--accent); }
+  .file { color: var(--accent-2); }
+  .items { display: block; padding-left: 24px; color: var(--body); }
+</style>

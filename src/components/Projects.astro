@@ -1,0 +1,33 @@
+---
+import ProjectCard from './ProjectCard.astro';
+import type { Project } from '../lib/projects';
+import { t as useT, type Lang } from '../i18n/ui';
+
+interface Props { lang: Lang; projects: Project[] }
+const { lang, projects } = Astro.props;
+const t = useT(lang);
+---
+
+<section id="projects" class="section projects">
+  <div class="container stack">
+    <header class="head" data-reveal>
+      <div class="stack-sm">
+        <p class="prompt">~ $ ps aux | grep side-project</p>
+        <h2 class="h2">{t('projects.title')}</h2>
+      </div>
+      <p class="mono meta">{projects.length} {t('projects.meta')}</p>
+    </header>
+    <ul class="grid">
+      {projects.map((p) => <ProjectCard project={p} lang={lang} />)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .projects { background: var(--bg-2); }
+  .stack { display: flex; flex-direction: column; gap: 48px; }
+  .stack-sm { display: flex; flex-direction: column; gap: 16px; }
+  .head { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; justify-content: space-between; }
+  .meta { font-size: 13px; color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 24px; margin: 0; padding: 0; }
+</style>

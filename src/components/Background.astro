@@ -1,0 +1,42 @@
+---
+// Ambient layer: slow binary rain, a few blinking pixels and a faint scan sweep. CSS only.
+const rain = [
+  { left: '6%', dur: 28, delay: 0, bits: '0110100101110010' },
+  { left: '19%', dur: 36, delay: -12, bits: '1001011101000110' },
+  { left: '34%', dur: 31, delay: -20, bits: '0101110010110101' },
+  { left: '58%', dur: 40, delay: -6, bits: '1110010100101001' },
+  { left: '73%', dur: 33, delay: -25, bits: '0011010111001011' },
+  { left: '91%', dur: 38, delay: -15, bits: '1010010110100111' },
+];
+const blips = [
+  { top: '22%', left: '12%', delay: 0, alt: false },
+  { top: '64%', left: '86%', delay: -1.5, alt: true },
+  { top: '82%', left: '7%', delay: -2.6, alt: false },
+  { top: '38%', left: '80%', delay: -0.8, alt: true },
+];
+---
+
+<div class="bg" aria-hidden="true">
+  {rain.map((r) => <span class="rain mono" style={`left:${r.left};animation-duration:${r.dur}s;animation-delay:${r.delay}s`}>{r.bits}</span>)}
+  {blips.map((b) => <span class:list={['blip', { 'blip--alt': b.alt }]} style={`top:${b.top};left:${b.left};animation-delay:${b.delay}s`} />)}
+  <span class="sweep" />
+</div>
+
+<style>
+  .bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+  .rain {
+    position: absolute; top: 0; writing-mode: vertical-rl; font-size: 13px; letter-spacing: 6px;
+    color: var(--rain); user-select: none; animation: rain linear infinite;
+  }
+  @keyframes rain { from { transform: translateY(-40%); } to { transform: translateY(120vh); } }
+  .blip { position: absolute; width: 8px; height: 8px; background: var(--accent); opacity: 0; animation: blip 4s ease-in-out infinite; }
+  .blip--alt { background: var(--accent-2); }
+  @keyframes blip { 0%, 100% { opacity: 0; } 50% { opacity: 0.9; } }
+  .sweep {
+    position: absolute; inset-inline: 0; top: 0; height: 120px; opacity: 0.35;
+    background: linear-gradient(transparent, var(--glow), transparent);
+    animation: sweep 9s linear infinite;
+  }
+  @keyframes sweep { from { transform: translateY(-120px); } to { transform: translateY(100vh); } }
+  @media (prefers-reduced-motion: reduce) { .rain, .blip, .sweep { display: none; } }
+</style>

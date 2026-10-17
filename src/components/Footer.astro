@@ -1,0 +1,29 @@
+---
+import { t as useT, type Lang } from '../i18n/ui';
+import { site } from '../config';
+
+interface Props { lang: Lang }
+const t = useT(Astro.props.lang);
+const profiles = [['github', site.github], ['linkedin', site.linkedin]].filter(([, href]) => href);
+---
+
+<footer class="footer mono">
+  <div class="container footer__row">
+    <span>© {new Date().getFullYear()} {site.name} · {t('footer.built')}</span>
+    <ul class="footer__links">
+      {profiles.map(([label, href]) => <li><a href={href} rel="me noopener" target="_blank">{label}</a></li>)}
+    </ul>
+    <span>{t('footer.exit')}</span>
+  </div>
+  <p class="container footer__egg">{t('lang.egg')}</p>
+</footer>
+
+<style>
+  .footer { border-top: 1px solid var(--line); padding-block: 24px; font-size: 12px; color: var(--muted); background: var(--bg); }
+  .footer__row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
+  .footer__links { display: flex; gap: 16px; margin: 0; padding: 0; list-style: none; }
+  .footer__links a { display: inline-flex; min-height: 32px; align-items: center; color: var(--text); }
+  .footer__links a:hover { color: var(--accent); }
+  .footer__egg { margin-top: 12px; opacity: 0.45; transition: opacity 0.3s, color 0.3s; }
+  .footer__egg:hover { opacity: 1; color: var(--accent); }
+</style>

@@ -1,0 +1,50 @@
+---
+import { career } from '../data/career';
+import { t as useT, type Lang } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+---
+
+<section id="log" class="section">
+  <div class="container log">
+    <header class="stack-sm" data-reveal>
+      <p class="prompt">~ $ git log --graph --oneline career</p>
+      <h2 class="h2">{t('log.title')}</h2>
+    </header>
+    <ol class="commits mono">
+      {career.map((c, i) => (
+        <li class="commit" data-reveal>
+          <span class="rail" aria-hidden="true">
+            <span class:list={['node', { 'node--head': i === 0, 'node--root': i === career.length - 1 }]} />
+            <span class="line" data-grow />
+          </span>
+          <div class="commit__body">
+            <p class="commit__meta"><span class="hash">{c.hash}</span> · {c.period[lang]}</p>
+            <h3 class="commit__role">{c.role[lang]}</h3>
+            <p class="commit__note">{c.note[lang]}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .log { max-width: 900px; display: flex; flex-direction: column; gap: 40px; }
+  .stack-sm { display: flex; flex-direction: column; gap: 16px; }
+  .commits { list-style: none; margin: 0; padding: 0; }
+  .commit { display: flex; gap: 20px; }
+  .rail { display: flex; flex-direction: column; align-items: center; width: 14px; flex-shrink: 0; }
+  .node { width: 14px; height: 14px; margin-top: 6px; flex-shrink: 0; background: var(--accent-2); }
+  .node--head { background: var(--accent); }
+  .node--root { background: var(--muted); }
+  .line { width: 2px; flex-grow: 1; background: var(--line); transform-origin: top; }
+  .commit:last-child .line { display: none; }
+  .commit__body { padding-bottom: 36px; display: flex; flex-direction: column; gap: 6px; }
+  .commit__meta { font-size: 13px; color: var(--muted); }
+  .hash { color: var(--hash); }
+  .commit__role { font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+  .commit__note { font-size: 14px; color: var(--body); }
+</style>

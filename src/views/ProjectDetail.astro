@@ -1,0 +1,62 @@
+---
+import { render } from 'astro:content';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import Base from '../layouts/Base.astro';
+import Terminal from '../components/Terminal.astro';
+import { slugOf, type Project } from '../lib/projects';
+import { t as useT, type Lang } from '../i18n/ui';
+
+interface Props { lang: Lang; entry: Project }
+const { lang, entry } = Astro.props;
+const t = useT(lang);
+const slug = slugOf(entry);
+const { title, summary, stack, pid, repo, demo } = entry.data;
+const { Content } = await render(entry);
+---
+
+<Base lang={lang} path={`projects/${slug}`} title={title} description={summary}>
+  <section class="detail pixgrid">
+    <div class="container stack">
+      <a class="back mono" href={`${getRelativeLocaleUrl(lang)}#projects`}>&lt; {t('project.back')}</a>
+      <Terminal title={`~/side-projects/${slug} — PID ${pid}`} status={t('projects.running')} corners class="window" data-zoom>
+        <div class="window__grid">
+          <div class="shot pixgrid scan mono" aria-hidden="true">[{slug}]</div>
+          <div class="info">
+            <p class="prompt">~ $ cat README.md</p>
+            <h1 class="title">{title}</h1>
+            <p class="lead">{summary}</p>
+            <div class="prose"><Content /></div>
+            <div>
+              <p class="mono label">{t('project.stack')}</p>
+              <ul class="tags">{stack.map((s) => <li class="tag">{s}</li>)}</ul>
+            </div>
+            <div class="links">
+              {demo && <a class="btn btn--primary" href={demo} target="_blank" rel="noopener">{t('project.demo')}</a>}
+              <a class:list={['btn', { 'btn--primary': !demo }]} href={repo} target="_blank" rel="noopener">{t('project.source')}</a>
+            </div>
+          </div>
+        </div>
+      </Terminal>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .detail { padding-block: clamp(40px, 8vw, 80px); min-height: calc(100svh - 61px); }
+  .stack { display: flex; flex-direction: column; gap: 24px; }
+  .back { align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; }
+  .detail :global(.window) { box-shadow: 0 30px 90px var(--glow); }
+  .window__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); }
+  .shot { min-height: 280px; display: grid; place-items: center; font-size: 12px; color: var(--ph); border-right: 1px solid var(--line); }
+  .info { padding: clamp(20px, 4vw, 32px); display: flex; flex-direction: column; gap: 20px; }
+  .title { font-size: clamp(36px, 5vw, 52px); line-height: 1; letter-spacing: -0.02em; font-weight: 700; }
+  .label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .links { display: flex; flex-wrap: wrap; gap: 12px; }
+  .prose { color: var(--body); line-height: 1.7; }
+  .prose :global(p + p), .prose :global(ul) { margin-top: 12px; }
+  .prose :global(ul) { padding-left: 20px; }
+  .prose :global(li + li) { margin-top: 8px; }
+  .prose :global(strong) { color: var(--text); }
+  .prose :global(code) { font-family: var(--font-mono); font-size: 0.9em; color: var(--accent); }
+</style>

@@ -1,0 +1,50 @@
+/* Design tokens, from the Claude Design canvas. Dark is the default. */
+:root {
+  color-scheme: dark;
+  --bg: #0c0a18;
+  --bg-2: #100d20;
+  --surface: #15122a;
+  --surface-2: #1c1836;
+  --line: #2e2950;
+  --text: #eceaf6;
+  --body: #bdb8d6;
+  --muted: #968fb8;
+  --ph: #6e6890;
+  --accent: #2ef2d0;
+  --accent-2: #ff4fa3;
+  --on-accent: #0c0a18;
+  --hash: #febc2e;
+  --grid: #191530;
+  --rain: rgb(46 242 208 / 0.09);
+  --glow: rgb(46 242 208 / 0.14);
+  --nav: rgb(12 10 24 / 0.82);
+
+  --font-display: 'Space Grotesk Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+  --container: 1200px;
+  --gutter: clamp(16px, 4vw, 24px);
+  --section-y: clamp(72px, 12vw, 120px);
+  --ease-out: cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f3f4f8;
+  --bg-2: #eaecf2;
+  --surface: #ffffff;
+  --surface-2: #eceef4;
+  --line: #d3d7e2;
+  --text: #12141c;
+  --body: #3a4058;
+  --muted: #545b74;
+  --ph: #7a819a;
+  --accent: #00806f;
+  --accent-2: #c81d6a;
+  --on-accent: #ffffff;
+  --hash: #9a6a00;
+  --grid: #e2e5ed;
+  --rain: rgb(0 128 111 / 0.1);
+  --glow: rgb(0 128 111 / 0.12);
+  --nav: rgb(243 244 248 / 0.85);
+}

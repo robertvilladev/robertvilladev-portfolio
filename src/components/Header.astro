@@ -1,0 +1,70 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { languages, t as useT, type Lang } from '../i18n/ui';
+import { site } from '../config';
+
+interface Props { lang: Lang; path: string }
+const { lang, path } = Astro.props;
+const t = useT(lang);
+const home = getRelativeLocaleUrl(lang);
+const links = [
+  ['projects', t('nav.projects')],
+  ['about', t('nav.about')],
+  ['log', t('nav.log')],
+  ['contact', t('nav.contact')],
+] as const;
+---
+
+<header class="header">
+  <nav class="container nav mono" aria-label="Main">
+    <a class="logo" href={home}><span class="logo__px pulse" aria-hidden="true"></span>{site.handle}<span class="muted">:~$</span></a>
+    <div class="nav__right">
+      <ul class="nav__links">
+        {links.map(([id, label]) => <li><a class="navlink" href={`${home}#${id}`}>{label}</a></li>)}
+      </ul>
+      <div class="lang" role="group" aria-label={t('lang.label')}>
+        {(Object.keys(languages) as Lang[]).map((l) => (
+          <a href={getRelativeLocaleUrl(l, path)} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
+            {languages[l]}
+          </a>
+        ))}
+      </div>
+      <button class="theme" type="button" data-theme-toggle aria-label={t('theme.label')}>
+        <span class="theme__swatch" aria-hidden="true"></span>{t('theme.name')}: <span data-theme-name>dark</span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .header {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--nav); border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+  }
+  .nav {
+    display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; justify-content: space-between;
+    padding-block: 14px; font-size: 14px;
+  }
+  .logo { display: flex; gap: 8px; align-items: center; color: var(--text); }
+  .logo__px { width: 10px; height: 10px; background: var(--accent); }
+  .muted { color: var(--muted); }
+  .nav__right { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: center; }
+  .nav__links { display: flex; flex-wrap: wrap; gap: 4px 22px; margin: 0; padding: 0; list-style: none; }
+  .navlink {
+    color: var(--muted);
+    background: linear-gradient(var(--accent), var(--accent)) no-repeat 0 100% / 0 1px;
+    transition: background-size 0.25s ease, color 0.25s;
+  }
+  .navlink:hover { color: var(--text); background-size: 100% 1px; }
+  .lang { display: flex; border: 1px solid var(--line); }
+  .lang a { padding: 6px 10px; color: var(--muted); }
+  .lang a[aria-current] { background: var(--accent); color: var(--on-accent); font-weight: 700; }
+  .theme {
+    display: flex; gap: 8px; align-items: center; min-height: 36px; padding: 6px 12px;
+    border: 1px solid var(--line); background: var(--surface); color: var(--text);
+    font: inherit; font-size: 13px; cursor: pointer;
+  }
+  .theme__swatch { width: 12px; height: 12px; border: 2px solid var(--accent); background: var(--bg); }
+  @media (max-width: 720px) { .nav__links { display: none; } }
+</style>

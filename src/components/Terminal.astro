@@ -1,0 +1,48 @@
+---
+// Reusable terminal window chrome. Content goes in the default slot.
+interface Props {
+  title: string;
+  status?: string;
+  corners?: boolean;
+  class?: string;
+  [key: `data-${string}`]: unknown;
+}
+const { title, status, corners = false, class: className, ...rest } = Astro.props;
+---
+
+<div class:list={['term', className]} {...rest}>
+  {corners && (
+    <>
+      <span class="px px--tl pulse" aria-hidden="true" />
+      <span class="px px--tr pulse" aria-hidden="true" />
+      <span class="px px--bl pulse" aria-hidden="true" />
+      <span class="px px--br pulse" aria-hidden="true" />
+    </>
+  )}
+  <div class="term__bar mono">
+    <span class="dot" style="background:#ff5f57" aria-hidden="true" />
+    <span class="dot" style="background:#febc2e" aria-hidden="true" />
+    <span class="dot" style="background:#28c840" aria-hidden="true" />
+    <span class="term__title">{title}</span>
+    {status && <span class="term__status"><span class="led pulse" aria-hidden="true" />{status}</span>}
+  </div>
+  <slot />
+</div>
+
+<style>
+  .term { position: relative; border: 1px solid var(--line); background: var(--surface); }
+  .term__bar {
+    display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+    border-bottom: 1px solid var(--line); background: var(--surface-2);
+    font-size: 12px; color: var(--muted);
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .term__title { flex-grow: 1; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .term__status { display: flex; gap: 6px; align-items: center; color: var(--accent); }
+  .led { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+  .px { position: absolute; width: 12px; height: 12px; z-index: 1; }
+  .px--tl { top: -6px; left: -6px; background: var(--accent); }
+  .px--tr { top: -6px; right: -6px; background: var(--accent-2); animation-delay: -0.6s; }
+  .px--bl { bottom: -6px; left: -6px; background: var(--accent-2); animation-delay: -1.2s; }
+  .px--br { bottom: -6px; right: -6px; background: var(--accent); animation-delay: -1.8s; }
+</style>

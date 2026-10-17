@@ -1,0 +1,28 @@
+---
+import { t as useT, type Lang } from '../i18n/ui';
+import { site } from '../config';
+
+interface Props { lang: Lang }
+const t = useT(Astro.props.lang);
+---
+
+<section id="contact" class="section pixgrid drift">
+  <div class="container contact" data-reveal>
+    <p class="prompt">~ $ ssh hello@robertvilla.dev</p>
+    <h2 class="contact__title">{t('contact.title')}<span class="cursor hl">_</span></h2>
+    <p class="lead contact__body">{t('contact.body')}</p>
+    <div class="links">
+      {site.email && <a class="btn btn--primary" href={`mailto:${site.email}`}>{t('contact.email')}</a>}
+      <a class:list={['btn', { 'btn--primary': !site.email }]} href={site.github} rel="me noopener" target="_blank">github</a>
+      {site.linkedin && <a class="btn" href={site.linkedin} rel="me noopener" target="_blank">linkedin</a>}
+      {site.cvUrl && <a class="btn" href={site.cvUrl} download>cv.pdf ↓</a>}
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact { max-width: 900px; display: flex; flex-direction: column; gap: 32px; align-items: flex-start; }
+  .contact__title { font-size: clamp(40px, 7vw, 84px); line-height: 1; letter-spacing: -0.03em; font-weight: 700; }
+  .contact__body { max-width: 560px; }
+  .links { display: flex; flex-wrap: wrap; gap: 12px; }
+</style>

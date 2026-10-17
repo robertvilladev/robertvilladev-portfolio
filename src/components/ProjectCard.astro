@@ -1,0 +1,49 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { slugOf, type Project } from '../lib/projects';
+import { t as useT, type Lang } from '../i18n/ui';
+
+interface Props { project: Project; lang: Lang }
+const { project, lang } = Astro.props;
+const t = useT(lang);
+const slug = slugOf(project);
+const { title, summary, stack, pid } = project.data;
+---
+
+<li class="cell" data-zoom>
+  <a class="card" href={getRelativeLocaleUrl(lang, `projects/${slug}`)} aria-label={`${t('projects.open')}: ${title}`}>
+    <div class="card__bar mono">
+      <span>PID {pid}</span>
+      <span class="card__slug">{slug}</span>
+      <span class="card__run"><span class="led pulse" aria-hidden="true" />{t('projects.running')}</span>
+    </div>
+    <div class="card__shot pixgrid scan mono" aria-hidden="true">[{slug}]</div>
+    <div class="card__body">
+      <h3 class="card__title">{title}</h3>
+      <p class="card__summary">{summary}</p>
+      <ul class="card__stack">{stack.map((s) => <li class="tag">{s}</li>)}</ul>
+    </div>
+  </a>
+</li>
+
+<style>
+  .cell { list-style: none; }
+  .card {
+    height: 100%; display: flex; flex-direction: column;
+    border: 1px solid var(--line); background: var(--surface); color: var(--text);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .card:hover { color: var(--text); transform: translateY(-6px); border-color: var(--accent); box-shadow: 0 18px 50px var(--glow); }
+  .card__bar {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 14px;
+    border-bottom: 1px solid var(--line); background: var(--surface-2); font-size: 12px; color: var(--muted);
+  }
+  .card__slug { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card__run { display: flex; gap: 6px; align-items: center; color: var(--accent); }
+  .led { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+  .card__shot { height: 180px; display: grid; place-items: center; font-size: 12px; color: var(--ph); border-bottom: 1px solid var(--line); }
+  .card__body { padding: 20px; display: flex; flex-direction: column; gap: 12px; flex-grow: 1; }
+  .card__title { font-size: 24px; font-weight: 700; }
+  .card__summary { font-size: 16px; line-height: 1.55; color: var(--body); flex-grow: 1; }
+  .card__stack { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+</style>

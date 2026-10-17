@@ -1,0 +1,82 @@
+---
+import Terminal from './Terminal.astro';
+import { t as useT, type Lang } from '../i18n/ui';
+import { site } from '../config';
+
+interface Props { lang: Lang; slugs: string[] }
+const { lang, slugs } = Astro.props;
+const t = useT(lang);
+const stack = 'typescript · python · react · angular · vue · node · fastapi · django · gsap';
+
+// Pixel blocks the screen breaks into during the dive (deterministic pattern, no runtime randomness).
+const COLS = 12, ROWS = 8;
+const cells = Array.from({ length: COLS * ROWS }, (_, i) => {
+  const k = (i * 7 + (i % 5) * 3) % 13;
+  return k === 0 ? 'var(--accent)' : k === 6 ? 'var(--accent-2)' : k < 5 ? 'var(--surface)' : k < 10 ? 'var(--surface-2)' : 'var(--bg)';
+});
+---
+
+<section class="hero pixgrid drift" data-dive aria-label={site.name}>
+  <div class="container hero__inner">
+    <div data-dive-fade><p class="hero__boot mono fade">{t('hero.boot')}</p></div>
+
+    <Terminal title="robert@villa: ~ — zsh — 120×32" corners class="hero__term" data-dive-target>
+      <div class="hero__screen scan mono">
+        <p class="type" style="--d:.2s"><span class="ps1">~ $</span> whoami</p>
+        <h1 class="hero__name fade" style="--d:1s">{site.name}<span class="cursor ps1">_</span></h1>
+        <p class="fade muted" style="--d:1.3s">{t('hero.role')}</p>
+        <p class="type gap" style="--d:1.8s"><span class="ps1">~ $</span> cat stack.txt</p>
+        <p class="fade" style="--d:2.5s">{stack}</p>
+        <p class="type gap" style="--d:3s"><span class="ps1">~ $</span> ls ~/side-projects</p>
+        <p class="fade hero__ls" style="--d:3.7s">{slugs.map((s) => <span>{s}/</span>)}</p>
+        <p class="fade gap" style="--d:4.1s"><span class="ps1">~ $</span> <span class="cursor hero__caret" aria-hidden="true" /></p>
+      </div>
+    </Terminal>
+
+    <div data-dive-fade>
+      <a class="hero__scroll mono fade bob" href="#about" style="--d:4.4s">
+        <span>{t('hero.scroll')}</span>
+        <span class="chev" aria-hidden="true"><i /><i /><i /></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="dive-grid" aria-hidden="true" style={`--cols:${COLS};--rows:${ROWS}`}>
+    {cells.map((c) => <span data-dive-cell style={`background:${c}`} />)}
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; min-height: calc(100svh - 61px); display: grid; place-items: center; padding-block: 64px; overflow: hidden; }
+  .hero__inner { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 40px; }
+  .hero__boot { font-size: 13px; letter-spacing: 0.2em; color: var(--accent-2); text-align: center; }
+  .hero :global(.hero__term) { width: 100%; max-width: 920px; box-shadow: 0 40px 120px var(--glow); will-change: transform; }
+  .hero__screen { padding: clamp(20px, 4vw, 32px) clamp(18px, 4vw, 36px) 40px; font-size: clamp(14px, 1.6vw, 17px); line-height: 1.75; }
+  .hero__name { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 7vw, 88px); line-height: 1; letter-spacing: -0.02em; margin: 12px 0 8px; }
+  .hero__ls { display: flex; flex-wrap: wrap; gap: 4px 24px; color: var(--accent-2); }
+  .hero__caret { display: inline-block; width: 10px; height: 20px; background: var(--accent); vertical-align: -3px; }
+  .ps1 { color: var(--accent); }
+  .muted { color: var(--muted); }
+  .gap { margin-top: 16px; }
+
+  .hero__scroll { display: flex; flex-direction: column; align-items: center; gap: 8px; min-height: 44px; font-size: 13px; color: var(--muted); text-align: center; }
+  .chev { display: grid; grid-template-columns: repeat(3, 6px); gap: 2px; }
+  .chev i { width: 6px; height: 6px; }
+  .chev i { background: var(--accent); }
+  .chev i:nth-child(2) { grid-area: 2 / 2; }
+  .chev i:nth-child(3) { grid-area: 1 / 3; }
+
+  .dive-grid {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    display: grid; grid-template-columns: repeat(var(--cols), 1fr); grid-template-rows: repeat(var(--rows), 1fr);
+  }
+  .dive-grid span { opacity: 0; }
+
+  /* boot typing (CSS only, works without JS) */
+  @keyframes type { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  @keyframes fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes bob { 50% { transform: translateY(6px); } }
+  .type { animation: type 0.7s steps(24) var(--d, 0s) both; }
+  .fade { animation: fadein 0.6s ease var(--d, 0s) both; }
+  .bob { animation: fadein 0.6s ease var(--d, 0s) both, bob 1.6s ease-in-out calc(var(--d, 0s) + 0.6s) infinite; }
+</style>
