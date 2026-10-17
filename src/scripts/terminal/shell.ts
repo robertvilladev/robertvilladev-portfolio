@@ -14,7 +14,6 @@ try { saved = JSON.parse(sessionStorage.getItem(KEY) ?? '{}'); } catch {}
 
 let ready: Promise<Ctx> | undefined;
 let dialog: HTMLDialogElement;
-let save: () => void;
 
 const URLS = /(https?:\/\/[^\s)]+|[\w.+-]+@[\w-]+\.[a-z]{2,})/;
 
@@ -36,7 +35,7 @@ function build(data: TermData): Ctx {
   dialog.className = 'tx mono';
   dialog.dataset.lenisPrevent = '';
   dialog.setAttribute('aria-label', t('term.title'));
-  dialog.innerHTML = `<div class="tx__bar"><span class="tx__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="tx__title">robert@villa — zsh</span><button class="tx__x" type="button"><span aria-hidden="true">×</span></button></div><div class="tx__out" role="log" aria-live="polite"></div><form class="tx__form"><span class="tx__ps1" aria-hidden="true"></span><input class="tx__in" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="send"></form>`;
+  dialog.innerHTML = `<div class="tx__bar"><span class="tx__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="tx__title">robert@villa — zsh</span><button class="tx__x" type="button"><span aria-hidden="true">×</span></button></div><div class="tx__out" role="log" aria-live="polite" tabindex="0"></div><form class="tx__form"><span class="tx__ps1" aria-hidden="true"></span><input class="tx__in" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="send"></form>`;
   const $ = <T extends HTMLElement>(s: string) => dialog.querySelector<T>(s)!;
   const out = $('.tx__out');
   const input = $<HTMLInputElement>('.tx__in');
@@ -71,7 +70,7 @@ function build(data: TermData): Ctx {
   let pos = ctx.history.length;
   let current: Command | undefined;
   const prompt = () => `${pathString(ctx.cwd)} $`;
-  save = () => {
+  const save = () => {
     try { sessionStorage.setItem(KEY, JSON.stringify({ open: dialog.open, cwd: ctx.cwd, history: ctx.history })); } catch {}
   };
   const echo = (line: string) => {
@@ -127,10 +126,9 @@ function build(data: TermData): Ctx {
   $('.tx__x').addEventListener('click', () => dialog.close());
   dialog.addEventListener('click', (e) => e.target === dialog && dialog.close()); // the backdrop
   out.addEventListener('click', () => getSelection()?.isCollapsed && input.focus());
-  dialog.addEventListener('close', () => {
-    save();
-    bus.dispatchEvent(new Event('close'));
-  });
+  dialog.addEventListener('close', () => bus.dispatchEvent(new Event('close')));
+  // The close event lands a task later, so a close right before navigating would be missed without this.
+  addEventListener('pagehide', save);
 
   ps1.textContent = prompt();
   ctx.print(t('term.welcome')).className = 'tx__mute';
@@ -150,6 +148,5 @@ export async function open() {
   if (dialog.open) return;
   dialog.showModal();
   dialog.querySelector('input')!.focus();
-  save();
   bus.dispatchEvent(new Event('open'));
 }

@@ -21,6 +21,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - name: Unit tests
+        run: npm run test:unit
       - name: JS size budget
         run: npm run check:size
       - run: npx playwright install --with-deps chromium
