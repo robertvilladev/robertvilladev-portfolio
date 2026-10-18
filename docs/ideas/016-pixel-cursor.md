@@ -2,7 +2,7 @@
 
 | Status | Phase | Category | Impact | Effort | Perf cost |
 | --- | --- | --- | --- | --- | --- |
-| ready | 3 · Delight | Delight | L | S | low |
+| done | 3 · Delight | Delight | L | S | low |
 
 **Depends on:** —
 
@@ -35,8 +35,8 @@ No loop while idle or hidden; `transform` and `opacity` only. Plus the budget an
 - ~~Worth it next to the click sparkle?~~ Yes: the sparkle reacts to clicks, the trail to movement, and the trail is opt-out with `trail off`.
 
 ## Done when
-- [ ] No measurable main-thread cost when the mouse is still (zero rAF calls from the trail after it settles)
-- [ ] Four squares follow the pointer on an 8px grid and grow over interactive elements
-- [ ] No trail under reduced motion or on coarse pointers; `trail off` persists across reloads
-- [ ] Looks right in all six themes and is hidden over the open terminal
-- [ ] e2e tests, `npm run check:size` and the build pass
+- [x] No measurable main-thread cost when the mouse is still (zero rAF calls from the trail after it settles)
+- [x] Four squares follow the pointer on an 8px grid and grow over interactive elements
+- [x] No trail under reduced motion or on coarse pointers; `trail off` persists across reloads
+- [x] Looks right in all six themes and is hidden over the open terminal
+- [x] e2e tests, `npm run check:size` and the build pass
