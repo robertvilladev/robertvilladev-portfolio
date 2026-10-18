@@ -112,12 +112,14 @@ const urlFor = (l: Lang) => new URL(getRelativeLocaleUrl(l, path), Astro.site).h
       <slot />
     </main>
     <Footer lang={lang} />
+    <p class="glitch-note mono" role="status" data-glitch-note data-msg={t('term.glitch.reduced')}></p>
     <script>
       import '@/scripts/boot';
       import '@/scripts/theme';
       import '@/scripts/terminal';
       import '@/scripts/motion';
       import '@/scripts/sparkle';
+      import '@/scripts/konami';
       import '@/scripts/trail';
     </script>
   </body>

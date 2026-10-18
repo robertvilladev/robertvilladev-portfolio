@@ -38,7 +38,7 @@ Every planned feature, in build order. Each row links to its spec in [ideas/](id
 
 | # | Item | Category | Impact | Effort | Perf | Depends on | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 012 | [Konami glitch mode](ideas/012-konami-glitch.md) | Delight | M | S | none | — | ready |
+| 012 | [Konami glitch mode](ideas/012-konami-glitch.md) | Delight | M | S | none | — | done |
 | 013 | [Achievements](ideas/013-achievements.md) | Delight | M | S | none | [007](ideas/007-interactive-terminal.md), [012](ideas/012-konami-glitch.md) | idea |
 | 014 | [Theme variants](ideas/014-theme-variants.md) | Delight | M | S | none | [007](ideas/007-interactive-terminal.md) | done |
 | 015 | [First-visit boot log](ideas/015-boot-log.md) | Delight | M | S | low | — | done |

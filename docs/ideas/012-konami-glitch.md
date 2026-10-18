@@ -2,7 +2,7 @@
 
 | Status | Phase | Category | Impact | Effort | Perf cost |
 | --- | --- | --- | --- | --- | --- |
-| ready | 3 · Delight | Delight | M | S | none |
+| done | 3 · Delight | Delight | M | S | none |
 
 **Depends on:** —
 
@@ -34,9 +34,9 @@ A classic easter egg that fits the cyberpunk side of the design and rewards curi
 Reduced motion: show a static message instead. No flashing faster than 3 Hz (photosensitivity). Plus the budget and rules in [ARCHITECTURE.md](../ARCHITECTURE.md).
 
 ## Done when
-- [ ] The key sequence sets `html[data-glitch]` and it clears after about 5 s; B and A count in either case
-- [ ] Keys typed into a text field never trigger it
-- [ ] `glitch` triggers the same effect and is hidden from `help`
-- [ ] Reduced motion shows the static message and no animation
-- [ ] Works in every theme; nothing flashes faster than 3 Hz
-- [ ] e2e tests cover the above
+- [x] The key sequence sets `html[data-glitch]` and it clears after about 5 s; B and A count in either case
+- [x] Keys typed into a text field never trigger it
+- [x] `glitch` triggers the same effect and is hidden from `help`
+- [x] Reduced motion shows the static message and no animation
+- [x] Works in every theme; nothing flashes faster than 3 Hz
+- [x] e2e tests cover the above
