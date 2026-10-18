@@ -12,6 +12,7 @@
 2. **Refine** the idea file: answer its open questions, fill in the approach, set `Status: ready`. Commit that alone.
 3. **Build** it in the same branch, keeping to the guardrails in [ARCHITECTURE.md](ARCHITECTURE.md).
 4. Set `Status: done`, update the row in [ROADMAP.md](ROADMAP.md), merge.
+5. **Clean up**: stop every dev, preview and test server you started (see [CLAUDE.md](../CLAUDE.md)).
 
 Status values: `idea` → `refining` → `ready` → `building` → `done` (or `dropped`, with a line on why).
 
