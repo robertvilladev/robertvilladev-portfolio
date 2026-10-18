@@ -20,13 +20,13 @@ const { Content } = await render(entry);
 <Base lang={lang} path={`projects/${slug}`} title={title} description={summary} image={`${lang}/${slug}`} jsonLd={projectLd(lang, Astro.site!, new URL(getRelativeLocaleUrl(lang, `projects/${slug}`), Astro.site).href, entry)}>
   <section class="detail pixgrid">
     <div class="container stack">
-      <a class="back mono" href={`${getRelativeLocaleUrl(lang)}#projects`}>&lt; {t('project.back')}</a>
-      <Terminal title={`~/side-projects/${slug} — PID ${pid}`} status={t('projects.running')} corners class="window" data-zoom>
+      <a class="back mono" href={`${getRelativeLocaleUrl(lang)}#p-${slug}`}>&lt; {t('project.back')}</a>
+      <Terminal title={`~/side-projects/${slug} — PID ${pid}`} status={t('projects.running')} corners class="window" id={`p-${slug}`} style={`view-transition-name:card-${slug}`} data-zoom>
         <div class="window__grid">
-          <div class="shot pixgrid scan mono" aria-hidden="true">[{slug}]</div>
+          <div class="shot pixgrid scan mono" style={`view-transition-name:shot-${slug}`} aria-hidden="true">[{slug}]</div>
           <div class="info">
             <p class="prompt">~ $ cat README.md</p>
-            <h1 class="title">{title}</h1>
+            <h1 class="title" style={`view-transition-name:title-${slug}`}>{title}</h1>
             <p class="lead">{summary}</p>
             <div class="prose"><Content /></div>
             <div>

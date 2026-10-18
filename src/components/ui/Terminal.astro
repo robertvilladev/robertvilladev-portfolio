@@ -5,6 +5,8 @@ interface Props {
   status?: string;
   corners?: boolean;
   class?: string;
+  style?: string;
+  id?: string;
   [key: `data-${string}`]: unknown;
 }
 const { title, status, corners = false, class: className, ...rest } = Astro.props;

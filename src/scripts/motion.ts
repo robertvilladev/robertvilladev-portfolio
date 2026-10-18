@@ -58,9 +58,9 @@ function reveals() {
   });
 }
 
-/** Project windows open from a small centred rectangle, staggered per row. */
+/** Project windows open from a small centred rectangle, staggered per row. The view-transition morph target (#p-<slug>, see Base.astro) is already on screen. */
 function zoomOpen() {
-  const els = gsap.utils.toArray<HTMLElement>('[data-zoom]');
+  const els = gsap.utils.toArray<HTMLElement>('[data-zoom]').filter((el) => el.id !== `p-${document.documentElement.dataset.vt}`);
   if (!els.length) return;
   gsap.set(els, { autoAlpha: 0, scale: 0.85, clipPath: 'inset(35% 35% 35% 35%)' });
   ScrollTrigger.batch(els, {

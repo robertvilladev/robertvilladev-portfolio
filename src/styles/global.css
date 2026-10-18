@@ -87,3 +87,15 @@ a:hover { color: var(--accent-2); }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Cross-document view transitions (008): crossfade everywhere, morph project card <-> detail window. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  .header { view-transition-name: site-header; }
+  .bg { view-transition-name: site-bg; }
+  .tx { view-transition-name: site-terminal; }
+  ::view-transition-group(*) { animation-duration: 0.45s; animation-timing-function: var(--ease-out); }
+  ::view-transition-group(root) { animation-duration: 0.2s; }
+  /* The terminal overlay reopens on the next page itself; never ghost it. */
+  ::view-transition-group(site-terminal) { display: none; }
+}
