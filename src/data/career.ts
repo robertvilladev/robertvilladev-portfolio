@@ -31,9 +31,9 @@ export const career: CareerEntry[] = [
     period: span('2024.11', now),
     role: { en: 'Full-Stack Engineer @ ERNI', es: 'Full-Stack Engineer @ ERNI', ca: 'Full-Stack Engineer @ ERNI' },
     note: {
-      en: 'I build MedTech frontends for medical devices and own the E2E and automated UI testing strategy. Moving our React components to CSS Modules led to far fewer styling bugs.',
-      es: 'Construyo frontends MedTech para dispositivos médicos y llevo la estrategia de tests E2E y de UI automatizados. Migrar nuestros componentes React a CSS Modules redujo mucho los bugs de estilos.',
-      ca: 'Construeixo frontends MedTech per a dispositius mèdics i porto l’estratègia de tests E2E i d’UI automatitzats. Migrar els nostres components React a CSS Modules va reduir molt els errors d’estils.',
+      en: 'I build MedTech frontends for medical devices and own the E2E and automated UI testing strategy. Moving our React components to CSS Modules cut styling bugs by about 40%.',
+      es: 'Construyo frontends MedTech para dispositivos médicos y llevo la estrategia de tests E2E y de UI automatizados. Migrar nuestros componentes React a CSS Modules redujo los bugs de estilos en torno a un 40%.',
+      ca: 'Construeixo frontends MedTech per a dispositius mèdics i porto l’estratègia de tests E2E i d’UI automatitzats. Migrar els nostres components React a CSS Modules va reduir els errors d’estils al voltant d’un 40%.',
     },
   },
   {
