@@ -57,13 +57,13 @@ test('the glitch command closes the terminal and triggers it', async ({ page }) 
 test.describe('reduced motion', () => {
   test.use({ reducedMotion: 'reduce' });
 
-  test('the code shows the static message and no effect', async ({ page }) => {
+  test('the code shows the message as a toast and no effect', async ({ page }) => {
     await page.goto('/es/');
     await konami(page);
-    await expect(page.locator('[data-glitch-note]')).toHaveText(ui.es['term.glitch.reduced']);
+    await expect(page.locator('.toast')).toHaveText(ui.es['term.glitch.reduced']);
     await expect(html(page)).not.toHaveAttribute('data-glitch');
     await expect(page.locator('.sparkle-layer span')).toHaveCount(0);
-    await expect(page.locator('[data-glitch-note]')).toBeHidden({ timeout: 5000 });
+    await expect(page.locator('.toast')).toBeHidden({ timeout: 5000 });
   });
 
   test('the glitch command prints the message in the terminal', async ({ page }) => {
