@@ -15,19 +15,23 @@ style.textContent = `
 @keyframes sparkle{from{opacity:1;transform:translate(0,0) scale(1)}to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.6)}}`;
 document.head.append(style);
 
-document.addEventListener('pointerdown', (e) => {
-  if (reduced.matches || e.button !== 0 || layer.childElementCount > MAX_LIVE) return;
-  if ((e.target as Element).closest('a, button, input, textarea, select, label, [data-no-sparkle]')) return;
-
+/** A burst of bits at viewport point (x, y). Also used by the Konami glitch (012). */
+export function burst(x: number, y: number) {
+  if (reduced.matches || layer.childElementCount > MAX_LIVE) return;
   for (let i = 0; i < BITS; i++) {
     const angle = Math.random() * Math.PI * 2;
     const dist = 28 + Math.random() * 56;
     const bit = document.createElement('span');
     bit.textContent = Math.random() < 0.5 ? '0' : '1';
-    bit.style.cssText = `left:${e.clientX - 4}px;top:${e.clientY - 8}px;color:var(${i % 3 ? '--accent' : '--accent-2'});--dx:${Math.cos(angle) * dist}px;--dy:${Math.sin(angle) * dist - 12}px;--delay:${Math.random() * 0.12}s`;
+    bit.style.cssText = `left:${x - 4}px;top:${y - 8}px;color:var(${i % 3 ? '--accent' : '--accent-2'});--dx:${Math.cos(angle) * dist}px;--dy:${Math.sin(angle) * dist - 12}px;--delay:${Math.random() * 0.12}s`;
     layer.append(bit);
   }
   // Timer rather than animationend: background tabs pause animations and would never fire it.
-  const burst = [...layer.children].slice(-BITS);
-  setTimeout(() => burst.forEach((b) => b.remove()), 1200);
+  const bits = [...layer.children].slice(-BITS);
+  setTimeout(() => bits.forEach((b) => b.remove()), 1200);
+}
+
+document.addEventListener('pointerdown', (e) => {
+  if (e.button !== 0 || (e.target as Element).closest('a, button, input, textarea, select, label, [data-no-sparkle]')) return;
+  burst(e.clientX, e.clientY);
 });

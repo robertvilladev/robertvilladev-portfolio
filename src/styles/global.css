@@ -125,3 +125,27 @@ a:hover { color: var(--accent-2); }
   98.9% { opacity: 1; transform: translateX(6px); clip-path: inset(30% 0 0); }
   100% { opacity: 0; }
 }
+
+/* Konami glitch (012), set for 5 s by scripts/konami.ts. Theme tokens only; steps stay under 3 Hz. */
+:root[data-glitch] :is(h1, h2) {
+  text-shadow: -3px 0 var(--accent), 3px 0 var(--accent-2);
+  animation: glitch-jitter 1.2s steps(1, end) infinite;
+}
+@keyframes glitch-jitter {
+  0% { translate: -2px 0; }
+  33% { translate: 3px 1px; }
+  66% { translate: -1px -1px; }
+}
+:root[data-glitch]::after {
+  content: ''; position: fixed; inset: -4px 0 0; z-index: 80; pointer-events: none;
+  background: repeating-linear-gradient(transparent 0 2px, color-mix(in srgb, var(--bg) 45%, transparent) 2px 4px);
+  animation: glitch-in 0.3s ease-out both, glitch-scan 1s linear infinite;
+}
+@keyframes glitch-in { from { opacity: 0; } }
+@keyframes glitch-scan { to { transform: translateY(4px); } }
+/* Reduced-motion stand-in for the effect. */
+.glitch-note {
+  position: fixed; right: 16px; bottom: 16px; z-index: 95; max-width: min(360px, calc(100vw - 32px));
+  margin: 0; padding: 10px 14px; border: 1px solid var(--accent); background: var(--surface); color: var(--text); font-size: 13px;
+}
+.glitch-note:empty { display: none; }
