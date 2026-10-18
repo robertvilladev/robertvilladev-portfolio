@@ -16,7 +16,9 @@ export interface TermData {
   stack: string;
   strings: Record<string, string>;
   fs: Dir;
-  projects: Record<string, { title: string; url: string; repo: string; demo?: string }>;
+  projects: Record<string, { title: string; url: string; repo?: string; demo?: string }>;
+  /** Commits, newest first. `p` is a project slug or `portfolio`, `url` ends in the sha, `when` is relative (009). */
+  log: { p: string; s: string; url: string; when: string }[];
 }
 
 /** One piece of an output line: text (URLs and emails get linked) or an explicit link. */
@@ -46,8 +48,8 @@ export interface Args { name: string; args: string[]; flags: Set<string> }
 export interface Command {
   name: string;
   run(a: Args, ctx: Ctx): void | Promise<void>;
-  /** Candidates for the word being typed after the command name. */
-  complete?(word: string, ctx: Ctx): string[];
+  /** Candidates for the word being typed after the command name; `words` is the whole line so far. */
+  complete?(word: string, ctx: Ctx, words: string[]): string[];
   /** ui.ts key holding `usage — description`. */
   man?: string;
   /** Left out of help and completion (easter eggs). */

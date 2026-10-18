@@ -12,7 +12,7 @@ register({
     if (!p) return ctx.error(`open: ${ctx.t('term.noSuch')}: ${arg}`);
     if (flags.has('repo') || flags.has('demo')) {
       const url = flags.has('demo') ? p.demo : p.repo;
-      if (!url) return ctx.error(`open: ${slug}: ${ctx.t('term.noDemo')}`);
+      if (!url) return ctx.error(`open: ${slug}: ${ctx.t(flags.has('demo') ? 'term.noDemo' : 'term.noRepo')}`);
       ctx.print(`${ctx.t('term.opening')} `, { text: url, href: url });
       ctx.openTab(url);
     } else {

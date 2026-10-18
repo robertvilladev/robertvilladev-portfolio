@@ -13,6 +13,9 @@ permissions:
 jobs:
   quality:
     runs-on: ubuntu-latest
+    # Build without GitHub data (009) so the e2e assertions are deterministic; tests/github.spec.ts reads it too.
+    env:
+      GITHUB_DATA: 'off'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

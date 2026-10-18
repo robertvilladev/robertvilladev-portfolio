@@ -30,7 +30,7 @@ Every planned feature, in build order. Each row links to its spec in [ideas/](id
 
 | # | Item | Category | Impact | Effort | Perf | Depends on | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 009 | [GitHub data at build time](ideas/009-github-live-data.md) | Content & data | M | S | none | [002](ideas/002-deploy-and-ci.md) | idea |
+| 009 | [GitHub data at build time](ideas/009-github-live-data.md) | Content & data | M | S | none | [002](ideas/002-deploy-and-ci.md) | done |
 | 010 | [Printable CV page](ideas/010-cv-page.md) | Content & data | H | S | none | — | idea |
 | 011 | [Project media](ideas/011-project-media.md) | Content & data | H | M | low | [001](ideas/001-content-gaps.md) | idea |
 

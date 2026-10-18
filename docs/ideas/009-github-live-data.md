@@ -2,7 +2,7 @@
 
 | Status | Phase | Category | Impact | Effort | Perf cost |
 | --- | --- | --- | --- | --- | --- |
-| ready | 2 · Real content | Content & data | M | S | none |
+| done | 2 · Real content | Content & data | M | S | none |
 
 **Depends on:** [002](002-deploy-and-ci.md)
 
@@ -39,7 +39,13 @@ Zero runtime cost: no new client JS outside the lazy terminal chunk (≤ 10 KB).
 - Private repos (mancos-gg, omdb-explorer, veggie-vendetta)? `private: true` in their content: no repo link (card, page, terminal, JSON-LD `codeRepository`), a localized tag, never fetched.
 
 ## Done when
-- [ ] Cards show live data
-- [ ] The build passes without network (`GITHUB_DATA=off` and actually offline)
-- [ ] Private repos are never linked or fetched
-- [ ] The daily rebuild workflow exists
+- [x] Cards show live data
+- [x] The build passes without network (`GITHUB_DATA=off` and actually offline, tested with a dead proxy and with the API's 403 rate limit)
+- [x] Private repos are never linked or fetched (`tests/github.spec.ts` greps every built page and JSON for their URLs)
+- [x] The daily rebuild workflow exists (needs the `VERCEL_DEPLOY_HOOK` secret)
+
+## Notes
+- "updated <relative>" sits at the foot of the card, not in its bar: in the bar it wrapped to a second line and cards in a row lost alignment.
+- Relative times are baked at build, so they're at most a day stale with the daily rebuild.
+- Terminal completion gets the whole line (`complete(word, ctx, words)`) so `git log <tab>` can complete slugs.
+- Lazy terminal: 8.5 → 9.5 KB with live data (log capped at 3 commits per repo, subjects at 72 chars).
