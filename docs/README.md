@@ -4,6 +4,7 @@
 | --- | --- |
 | [ROADMAP.md](ROADMAP.md) | Every planned feature, classified and ordered into phases. Start here. |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | How the repo is laid out, the conventions, and the performance budget every feature must respect. |
+| [CONTENT.md](CONTENT.md) | Voice, spelling and length rules for every text on the site. Read it before writing copy. |
 | [ideas/](ideas/) | One spec per roadmap item. Each is refined on its own branch before it's built. |
 
 ## Workflow for a roadmap item

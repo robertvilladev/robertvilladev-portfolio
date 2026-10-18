@@ -1,6 +1,6 @@
 # robertvilla.dev
 
-Astro portfolio. Start with [docs/README.md](docs/README.md) (workflow) and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) (rules and budgets).
+Astro portfolio. Start with [docs/README.md](docs/README.md) (workflow) and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) (rules and budgets). Any copy you write follows [docs/CONTENT.md](docs/CONTENT.md).
 
 ## Clean up before you finish
 

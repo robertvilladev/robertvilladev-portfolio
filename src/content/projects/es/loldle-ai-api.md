@@ -1,9 +1,9 @@
 ---
 title: Loldle AI API
-summary: Una API en Express + TypeScript detrás de un juego de adivinar al estilo Loldle.
+summary: Una API en Express + TypeScript detrás de un juego de adivinar al estilo Loldle, organizada por funcionalidades.
 stack: [typescript, node, express]
 pid: '0042'
 order: 5
 repo: https://github.com/robertvilladev/loldle-ai-api
 ---
-Un backend en Express + TypeScript organizado por funcionalidades, con un pipeline de peticiones tipado y herramientas para iterar rápido.
+Las peticiones pasan por un pipeline tipado y las herramientas están pensadas para iterar rápido.
