@@ -2,7 +2,7 @@
 
 | Status | Phase | Category | Impact | Effort | Perf cost |
 | --- | --- | --- | --- | --- | --- |
-| ready | 3 · Delight | Delight | M | S | none |
+| done | 3 · Delight | Delight | M | S | none |
 
 **Depends on:** [007](007-interactive-terminal.md)
 
@@ -46,12 +46,12 @@ Design tokens make extra palettes nearly free. Hidden themes are a good terminal
 - ~~Which palettes?~~ matrix, amber, synthwave and night-city, as in the table above.
 
 ## Done when
-- [ ] `src/lib/themes.ts` is the single list; theme.ts, the terminal command and the inline script read it
-- [ ] The four hidden themes define every token, with their ambient layers and accents
-- [ ] Unknown saved values fall back to the system preference
-- [ ] Toggle from a hidden theme goes to dark; label shows its name; `aria-pressed` only for light
-- [ ] `theme` prints current, visible themes and the hint; completion lists all six; `man theme` unchanged
-- [ ] `theme-color` follows `--bg`
-- [ ] `tokens.test.ts` passes for every theme; e2e covers set, reload, toggle, completion and fallback
-- [ ] Reduced motion turns off every new animation; nothing flashes faster than 3 Hz
-- [ ] Extra CSS ≈ 2 KB gzipped; `npm run check:size` passes
+- [x] `src/lib/themes.ts` is the single list; theme.ts, the terminal command and the inline script read it
+- [x] The four hidden themes define every token, with their ambient layers and accents
+- [x] Unknown saved values fall back to the system preference
+- [x] Toggle from a hidden theme goes to dark; label shows its name; `aria-pressed` only for light
+- [x] `theme` prints current, visible themes and the hint; completion lists all six; `man theme` unchanged
+- [x] `theme-color` follows `--bg`
+- [x] `tokens.test.ts` passes for every theme; e2e covers set, reload, toggle, completion and fallback
+- [x] Reduced motion turns off every new animation; nothing flashes faster than 3 Hz
+- [x] Extra CSS ≈ 2 KB gzipped; `npm run check:size` passes

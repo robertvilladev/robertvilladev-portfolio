@@ -90,7 +90,7 @@ for (const lang of langs) {
       ['cd ..', ''],
       ['cat projects/mancos-gg/README.md', `repo: ${t('projects.private')}`],
       ['neofetch', 'robert@villa', t('term.nf.langs'), 'en · es · ca', t('lang.egg')],
-      ['theme', `${t('theme.name')}: `],
+      ['theme', `${t('theme.name')}: `, 'dark light', t('term.theme.more')],
       ['theme nope', t('term.usage')],
       ['open', t('term.usage')],
       ['open nope', t('term.noSuch')],
@@ -144,6 +144,45 @@ test('open, lang and history survive navigation', async ({ page }) => {
   await page.keyboard.press('Escape');
   await page.reload();
   await expect(page.locator('dialog')).toHaveCount(0);
+});
+
+test.describe('hidden themes (014)', () => {
+  test('theme matrix persists across a reload and the toggle goes back to dark', async ({ page }) => {
+    await open(page);
+    await run(page, 'theme matrix');
+    const html = page.locator('html');
+    const toggle = page.locator('[data-theme-toggle]');
+    await expect(html).toHaveAttribute('data-theme', 'matrix');
+    await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#020a04');
+    await page.keyboard.press('Escape');
+    await page.reload();
+    await expect(html).toHaveAttribute('data-theme', 'matrix');
+    await expect(toggle).toContainText(`${ui.en['theme.name']}: matrix`);
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    await toggle.click();
+    await expect(html).toHaveAttribute('data-theme', 'dark');
+    await toggle.click();
+    await expect(html).toHaveAttribute('data-theme', 'light');
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('tab completion lists the hidden themes; man theme does not', async ({ page }) => {
+    await open(page);
+    await input(page).pressSequentially('theme ');
+    await input(page).press('Tab');
+    for (const name of ['dark', 'light', 'matrix', 'amber', 'synthwave', 'night-city']) await expect(log(page)).toContainText(name);
+    await run(page, 'clear');
+    await run(page, 'man theme');
+    await expect(log(page)).toContainText('theme [dark|light]');
+    await expect(log(page)).not.toContainText('synthwave', { timeout: 500 });
+  });
+
+  test('an unknown saved theme falls back to the system preference', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.addInitScript(() => localStorage.setItem('theme', 'bogus'));
+    await page.goto('/');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  });
 });
 
 test('open --repo opens the repo in a new tab', async ({ page, context }) => {

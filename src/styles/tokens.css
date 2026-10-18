@@ -70,3 +70,91 @@
   --glow: rgb(0 128 111 / 0.12);
   --nav: rgb(243 244 248 / 0.85);
 }
+
+/* Hidden themes (014), reached from the terminal: `theme matrix|amber|synthwave|night-city`.
+   Each defines every color token; tokens.test.ts checks their contrast. */
+:root[data-theme='matrix'] {
+  color-scheme: dark;
+  --bg: #020a04;
+  --bg-2: #03100a;
+  --surface: #06170c;
+  --surface-2: #0a2213;
+  --line: #134a22;
+  --text: #d2ffdc;
+  --body: #8ef0a8;
+  --muted: #55c076;
+  --ph: #2e7a45;
+  --accent: #00ff41;
+  --accent-2: #b8ff5c;
+  --on-accent: #021a07;
+  --hash: #e6ff8a;
+  --grid: #08190d;
+  --rain: rgb(0 255 65 / 0.16);
+  --glow: rgb(0 255 65 / 0.2);
+  --nav: rgb(2 10 4 / 0.86);
+  --font-display: var(--font-mono);
+}
+
+:root[data-theme='amber'] {
+  color-scheme: dark;
+  --bg: #0e0902;
+  --bg-2: #130c03;
+  --surface: #191005;
+  --surface-2: #221708;
+  --line: #4a3210;
+  --text: #ffd28a;
+  --body: #f2b85a;
+  --muted: #c98e30;
+  --ph: #7a5418;
+  --accent: #ffb000;
+  --accent-2: #ffcf66;
+  --on-accent: #1a0f00;
+  --hash: #ffc23d;
+  --grid: #1d1407;
+  --rain: rgb(255 176 0 / 0.08);
+  --glow: rgb(255 176 0 / 0.18);
+  --nav: rgb(14 9 2 / 0.86);
+  --font-display: var(--font-mono);
+}
+
+:root[data-theme='synthwave'] {
+  color-scheme: dark;
+  --bg: #12042a;
+  --bg-2: #180634;
+  --surface: #200941;
+  --surface-2: #2a0e54;
+  --line: #4e2384;
+  --text: #fdeeff;
+  --body: #e6c4f5;
+  --muted: #c393e0;
+  --ph: #7d4f9e;
+  --accent: #ff3fae;
+  --accent-2: #ff9d3d;
+  --on-accent: #12042a;
+  --hash: #3df2ff;
+  --grid: #260b4a;
+  --rain: rgb(255 63 174 / 0.1);
+  --glow: rgb(255 63 174 / 0.24);
+  --nav: rgb(18 4 42 / 0.84);
+}
+
+:root[data-theme='night-city'] {
+  color-scheme: dark;
+  --bg: #070809;
+  --bg-2: #0b0c0e;
+  --surface: #111316;
+  --surface-2: #181b1f;
+  --line: #2d3238;
+  --text: #f4f3e6;
+  --body: #c9cbc0;
+  --muted: #9ba19b;
+  --ph: #5c615e;
+  --accent: #fcee0a;
+  --accent-2: #00f0ff;
+  --on-accent: #070809;
+  --hash: #ff4b4b;
+  --grid: #13161a;
+  --rain: rgb(0 240 255 / 0.07);
+  --glow: rgb(252 238 10 / 0.14);
+  --nav: rgb(7 8 9 / 0.88);
+}
