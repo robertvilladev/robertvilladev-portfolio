@@ -4,7 +4,8 @@ import { github, repoName } from '@/lib/github';
 
 export type Project = CollectionEntry<'projects'>;
 
-export const slugOf = (p: Project) => p.id.split('/').slice(1).join('/');
+/** Entry id without its locale folder: `en/gotdle` → `gotdle`. Works for notes too. */
+export const slugOf = (p: { id: string }) => p.id.split('/').slice(1).join('/');
 
 export async function getProjects(lang: Lang) {
   const all = await getCollection('projects', (p) => p.id.startsWith(`${lang}/`) && !p.data.draft);

@@ -9,6 +9,7 @@ src/
   config.ts                 personal data and links (null = not rendered)
   content.config.ts         content collection schemas (zod)
   content/projects/<lang>/  one markdown file per project per language
+  content/notes/<lang>/     one MDX file per note per language, same slug in every locale (018)
   data/career.ts            timeline entries, localized inline
   i18n/ui.ts                locales (single source) + UI strings + t()
   lib/                      data helpers (projects.ts, jsonld.ts, github.ts: build-time GitHub data, themes.ts: the theme list)
@@ -35,6 +36,7 @@ Imports use the `@/` alias (`@/components/ui/Terminal.astro`), never `../`.
 
 **Content**
 - New project: one `.md` per language in `content/projects/<lang>/`. The schema in `content.config.ts` validates it at build time.
+- New note: one `.mdx` per language in `content/notes/<lang>/`, same file name in each (`content/notes.test.ts` checks it). Set `project` to link it from that project's page. Code blocks pick up the theme on their own.
 - Personal data and links only in `config.ts`.
 - `private: true` on a project: its repo is never linked (page, card, terminal, JSON-LD) or fetched.
 

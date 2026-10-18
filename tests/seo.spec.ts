@@ -25,6 +25,7 @@ const pages = readdirSync('dist', { recursive: true, encoding: 'utf8' })
   });
 const homes = pages.filter((p) => p.path === '/' || /^\/(es|ca)\/$/.test(p.path));
 const projectPages = pages.filter((p) => p.path.includes('/projects/'));
+const notePages = pages.filter((p) => /\/notes\/[^/]+\/$/.test(p.path));
 
 test('every locale has a home and project pages to check', () => {
   expect(homes.map((h) => h.lang).sort()).toEqual([...langs].sort());
@@ -50,6 +51,21 @@ for (const p of projectPages) {
     for (const k of ['name', 'description', 'url']) expect(ld[k], k).toBeTruthy();
     if (privateSlugs.some((s) => p.path.endsWith(`/projects/${s}/`))) expect(ld.codeRepository).toBeUndefined();
     else expect(ld.codeRepository).toMatch(/^https:\/\//);
+    expect(ld.keywords.length).toBeGreaterThan(0);
+  });
+}
+
+test('every locale has note pages', () => {
+  expect(new Set(notePages.map((p) => p.lang))).toEqual(new Set(langs));
+});
+
+for (const p of notePages) {
+  test(`${p.path} has a valid TechArticle JSON-LD`, () => {
+    expect(p.ld).toHaveLength(1);
+    const [ld] = p.ld;
+    expect(ld).toMatchObject({ '@type': 'TechArticle', inLanguage: p.lang, author: { '@id': homes[0].ld[0]['@id'] }, image: p.meta('og:image') });
+    for (const k of ['headline', 'description', 'url']) expect(ld[k], k).toBeTruthy();
+    expect(ld.datePublished).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(ld.keywords.length).toBeGreaterThan(0);
   });
 }

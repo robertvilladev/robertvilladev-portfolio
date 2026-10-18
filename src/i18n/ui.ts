@@ -105,6 +105,13 @@ const en = {
   'hero.hint.touch': 'tap >_ to type',
   'footer.built': 'built with astro + gsap',
   'footer.exit': '[process exited with code 0]',
+  'nav.notes': './notes',
+  'notes.title': 'Notes',
+  'notes.description': 'Short write-ups on how the things I build actually work.',
+  'notes.updated': 'updated',
+  'notes.project': 'project',
+  'notes.related': 'notes',
+  'notes.rss': 'rss feed',
 } as const;
 
 export type UiKey = keyof typeof en;
@@ -204,6 +211,13 @@ export const ui: Record<Lang, Record<UiKey, string>> = {
     'hero.hint.touch': 'toca >_ para escribir',
     'footer.built': 'hecho con astro + gsap',
     'footer.exit': '[proceso terminado con código 0]',
+    'nav.notes': './notas',
+    'notes.title': 'Notas',
+    'notes.description': 'Apuntes cortos sobre cómo funcionan por dentro las cosas que construyo.',
+    'notes.updated': 'actualizado',
+    'notes.project': 'proyecto',
+    'notes.related': 'notas',
+    'notes.rss': 'feed rss',
   },
   ca: {
     'meta.title': 'Robert Villa — Enginyer de software',
@@ -298,6 +312,13 @@ export const ui: Record<Lang, Record<UiKey, string>> = {
     'hero.hint.touch': 'toca >_ per escriure',
     'footer.built': 'fet amb astro + gsap',
     'footer.exit': '[procés acabat amb codi 0]',
+    'nav.notes': './notes',
+    'notes.title': 'Notes',
+    'notes.description': 'Apunts curts sobre com funcionen per dins les coses que construeixo.',
+    'notes.updated': 'actualitzat',
+    'notes.project': 'projecte',
+    'notes.related': 'notes',
+    'notes.rss': 'feed rss',
   },
 };
 

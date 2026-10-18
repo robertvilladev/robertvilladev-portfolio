@@ -1,0 +1,66 @@
+---
+import { render } from 'astro:content';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import Base from '@/layouts/Base.astro';
+import Terminal from '@/components/ui/Terminal.astro';
+import { noteLd } from '@/lib/jsonld';
+import { formatDate, notePaths, type Note } from '@/lib/notes';
+import { slugOf } from '@/lib/projects';
+import { t as useT, type Lang } from '@/i18n/ui';
+
+export const getStaticPaths = notePaths;
+
+interface Props { lang: Lang; entry: Note }
+const { lang, entry } = Astro.props;
+const t = useT(lang);
+const slug = slugOf(entry);
+const { title, summary, date, updated, tags, project } = entry.data;
+const { Content } = await render(entry);
+const image = `${lang}/notes/${slug}`;
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+---
+
+<Base lang={lang} path={`notes/${slug}`} title={title} description={summary} image={image} jsonLd={noteLd(lang, Astro.site!, new URL(getRelativeLocaleUrl(lang, `notes/${slug}`), Astro.site).href, entry, new URL(`/og/${image}.png`, Astro.site).href)}>
+  <section class="note pixgrid">
+    <div class="container stack">
+      <a class="back mono" href={getRelativeLocaleUrl(lang, 'notes')}>&lt; {t('project.back')}</a>
+      <Terminal title={`~/notes/${slug}.md`} class="window">
+        <article class="body">
+          <p class="prompt">~ $ cat notes/{slug}.md</p>
+          <h1 class="title">{title}</h1>
+          <p class="mono meta">
+            <time datetime={iso(date)}>{formatDate(date, lang)}</time>
+            {updated && <> · {t('notes.updated')} <time datetime={iso(updated)}>{formatDate(updated, lang)}</time></>}
+            {project && <> · {t('notes.project')}: <a href={getRelativeLocaleUrl(lang, `projects/${project}`)}>{project}</a></>}
+          </p>
+          <p class="lead">{summary}</p>
+          <div class="prose"><Content /></div>
+          <ul class="tags">{tags.map((s) => <li class="tag">{s}</li>)}</ul>
+        </article>
+      </Terminal>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .note { padding-block: clamp(40px, 8vw, 80px); }
+  .stack { max-width: 860px; display: flex; flex-direction: column; gap: 24px; }
+  .back { align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; }
+  .body { padding: clamp(20px, 4vw, 40px); display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+  .title { font-size: clamp(32px, 5vw, 52px); line-height: 1.05; letter-spacing: -0.02em; font-weight: 700; }
+  .meta { font-size: 13px; color: var(--muted); }
+  .meta a { text-decoration: underline; text-underline-offset: 3px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .prose { color: var(--body); font-size: 17px; line-height: 1.75; overflow-wrap: break-word; }
+  .prose > :global(* + *) { margin-top: 18px; }
+  .prose :global(h2) { margin-top: 40px; font-size: clamp(22px, 3vw, 28px); line-height: 1.2; color: var(--text); }
+  .prose :global(h2)::before { content: '## '; font-family: var(--font-mono); color: var(--accent); }
+  .prose :global(ul), .prose :global(ol) { padding-left: 22px; }
+  .prose :global(li + li) { margin-top: 6px; }
+  .prose :global(strong) { color: var(--text); }
+  .prose :global(a) { text-decoration: underline; text-underline-offset: 3px; }
+  .prose :global(:not(pre) > code) { font-family: var(--font-mono); font-size: 0.88em; color: var(--accent); }
+  .prose :global(table) { display: block; overflow-x: auto; border-collapse: collapse; font-size: 15px; }
+  .prose :global(th), .prose :global(td) { padding: 8px 12px; border: 1px solid var(--line); text-align: left; }
+  .prose :global(th) { color: var(--text); font-family: var(--font-mono); font-size: 13px; }
+</style>

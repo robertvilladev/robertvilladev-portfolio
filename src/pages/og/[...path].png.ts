@@ -5,9 +5,10 @@ import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import { langs, t as useT, type Lang } from '@/i18n/ui';
 import { projectPaths, slugOf, type Project } from '@/lib/projects';
+import { notePaths, type Note } from '@/lib/notes';
 import { site } from '@/config';
 
-// Build-time share cards: /og/<lang>/home.png and /og/<lang>/<slug>.png (1200×630, dark palette from tokens.css).
+// Build-time share cards: /og/<lang>/home.png, /og/<lang>/<slug>.png and /og/<lang>/notes/<slug>.png (1200×630, dark palette from tokens.css).
 const c = { bg: '#0c0a18', surface: '#15122a', line: '#2e2950', text: '#eceaf6', body: '#bdb8d6', muted: '#968fb8', accent: '#2ef2d0', pink: '#ff4fa3', hash: '#febc2e' };
 const homeStack = ['typescript', 'python', 'react', 'angular', 'node'];
 
@@ -44,14 +45,17 @@ const card = ({ cmd, title, subtitle, body, tags }: Card) =>
 export async function getStaticPaths() {
   const homes = langs.map((lang) => ({ params: { path: `${lang}/home` }, props: { lang } }));
   const projects = (await projectPaths()).map(({ props: { lang, entry } }) => ({ params: { path: `${lang}/${slugOf(entry)}` }, props: { lang, entry } }));
-  return [...homes, ...projects];
+  const notes = (await notePaths()).map(({ props: { lang, entry } }) => ({ params: { path: `${lang}/notes/${slugOf(entry)}` }, props: { lang, note: entry } }));
+  return [...homes, ...projects, ...notes];
 }
 
 export const GET: APIRoute = async ({ props }) => {
-  const { lang, entry } = props as { lang: Lang; entry?: Project };
-  const spec: Card = entry
-    ? { cmd: `cat ${slugOf(entry)}`, title: entry.data.title, body: entry.data.summary, tags: entry.data.stack }
-    : { cmd: 'whoami', title: site.name, subtitle: useT(lang)('meta.jobTitle'), tags: homeStack };
+  const { lang, entry, note } = props as { lang: Lang; entry?: Project; note?: Note };
+  const spec: Card = note
+    ? { cmd: `cat notes/${slugOf(note)}.md`, title: note.data.title, body: note.data.summary, tags: note.data.tags }
+    : entry
+      ? { cmd: `cat ${slugOf(entry)}`, title: entry.data.title, body: entry.data.summary, tags: entry.data.stack }
+      : { cmd: 'whoami', title: site.name, subtitle: useT(lang)('meta.jobTitle'), tags: homeStack };
   const svg = await satori(card(spec) as never, { width: 1200, height: 630, fonts });
   return new Response(new Uint8Array(new Resvg(svg, { font: { loadSystemFonts: false } }).render().asPng()), { headers: { 'Content-Type': 'image/png' } });
 };

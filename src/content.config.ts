@@ -19,4 +19,19 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { projects };
+// One MDX file per note per locale: src/content/notes/<lang>/<slug>.mdx (018). Every locale has every slug.
+const notes = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/notes' }),
+  schema: z.object({
+    title: z.string(),
+    summary: z.string(),
+    date: z.coerce.date(),
+    updated: z.coerce.date().optional(),
+    tags: z.array(z.string()),
+    /** Slug of the project this note is about; its page links here. */
+    project: z.string().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { projects, notes };

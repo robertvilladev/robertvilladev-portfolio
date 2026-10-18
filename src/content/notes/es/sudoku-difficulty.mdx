@@ -1,0 +1,115 @@
+---
+title: ¿Qué hace difícil un sudoku?
+summary: Contar las pistas no te dice lo difícil que es un sudoku. En sudoku-2077 gradúo cada puzzle por la técnica más difícil que necesita una persona para resolverlo.
+date: 2026-10-18
+tags: [sudoku, typescript, algoritmos]
+project: sudoku-2077
+---
+
+La respuesta habitual es "menos pistas". Suena lógico: menos números en el tablero, más trabajo. Pero un puzzle con pocas pistas puede resolverse con pasos sencillos, y uno con más pistas puede dejarte atascado. Cuando hice [sudoku-2077](https://github.com/robertvilladev/sudoku-2077) quería que la etiqueta de dificultad significara algo, así que dejé de contar pistas. El código se hace otra pregunta: **¿qué es lo más difícil que tiene que saber una persona para resolver este puzzle?**
+
+## Resolverlo como una persona
+
+La gradación empieza con un solver que nunca adivina. Guarda una lista de candidatos para cada casilla vacía (los dígitos que no chocan con su fila, columna y caja) y aplica 13 técnicas, de la más fácil a la más difícil. Uso los nombres en inglés, que son los que usa casi todo el mundo:
+
+1. Hidden single
+2. Naked single
+3. Pointing pair
+4. Box/line reduction
+5. Naked pair
+6. Hidden pair
+7. X-Wing
+8. Naked triple
+9. Swordfish
+10. Hidden triple
+11. XY-Wing
+12. XYZ-Wing
+13. Naked quad
+
+Las singles colocan un dígito. Todas las demás eliminan candidatos hasta que vuelve a aparecer una single. Un naked pair, por ejemplo, son dos casillas de una misma unidad que solo pueden tener los mismos dos dígitos, así que ninguna otra casilla de esa unidad puede tenerlos. Un XY-Wing es una casilla con dos candidatos, X e Y, que ve otras dos casillas: una con X y Z, y otra con Y y Z. Tome el dígito que tome la primera, una de las otras dos tiene que ser Z, así que Z se puede quitar de todas las casillas que ven a las dos.
+
+Lo importante es el orden. En cada pasada el solver vuelve al principio de la lista, aplica la primera técnica que consigue avanzar y empieza de nuevo:
+
+```ts
+while (progressed && grid.includes(0)) {
+  progressed = false;
+  for (const technique of TECHNIQUES) {
+    if (technique.apply(grid, candidates)) {
+      techniqueCounts[technique.name] = (techniqueCounts[technique.name] ?? 0) + 1;
+      if (options.solution) assertConsistent(grid, candidates, options.solution, technique.name);
+      progressed = true;
+      break;
+    }
+  }
+}
+```
+
+Como siempre prueba primero las técnicas fáciles, un XYZ-Wing solo entra en la cuenta cuando nada más sencillo habría funcionado en ese momento. Así la cuenta recoge lo que el puzzle *necesita*, no lo que el solver probó por casualidad.
+
+## De las técnicas a un nivel
+
+Cada técnica tiene un peso y un nivel. Los pesos son más o menos diez veces la puntuación de Sudoku Explainer, una escala conocida para valorar técnicas de sudoku. Los niveles son míos:
+
+| Nivel | Técnicas |
+| --- | --- |
+| Fácil | hidden single, naked single |
+| Medio | pointing pair, box/line reduction, naked pair, hidden pair |
+| Difícil | X-Wing, naked triple, Swordfish, hidden triple, XY-Wing, XYZ-Wing, naked quad |
+| Hardcore | el solver se atasca |
+
+No siguen exactamente el orden de Sudoku Explainer. Allí el X-Wing puntúa por debajo del hidden pair, pero a la mayoría de jugadores les parece un patrón avanzado, así que lo puse en Difícil con los triples, el Swordfish y las wings.
+
+El clasificador es corto. El nivel es el más alto de todas las técnicas usadas. La puntuación suma peso por número de usos, así que también crece con la cantidad de pasos difíciles que pide un puzzle, y eso sirve para ordenar puzzles dentro de un mismo nivel:
+
+```ts
+export function classifyDifficulty(result: LogicalSolveResult): ClassificationResult {
+  let score = 0;
+  let difficulty: Difficulty = Difficulty.EASY;
+  for (const [name, count] of Object.entries(result.techniqueCounts) as Array<[TechniqueName, number]>) {
+    const info = TECHNIQUE_INFO[name];
+    score += info.weight * count;
+    if (TIER_RANK[info.tier] > TIER_RANK[difficulty]) difficulty = info.tier;
+  }
+
+  if (!result.solved) return { difficulty: Difficulty.HARDCORE, score: HARDCORE_SCORE_BASE + score };
+  return { difficulty, score };
+}
+```
+
+Si el solver no puede terminar, el puzzle necesita algo que no está en la lista, como cadenas, forcing nets o directamente adivinar. Eso es Hardcore, y su puntuación empieza en 1000 para que siempre quede por encima de cualquier puzzle que el solver sí terminó.
+
+## Comprobar que solo hay una solución
+
+Nada de esto importa si el puzzle tiene dos soluciones. Un sudoku de verdad tiene exactamente una, y el generador tiene que demostrarlo cada vez que quita un dígito. Parte de una cuadrícula llena al azar y "cava agujeros": quita una casilla y solo mantiene el cambio si el puzzle sigue teniendo una única solución. Esa comprobación se hace en cada intento, así que es la parte más caliente de todo el generador.
+
+Para eso escribí otro solver por fuerza bruta, pensado para ir rápido y no para explicar nada. Cada fila, columna y caja guarda una máscara de 9 bits con los dígitos que ya usa. Sacar los candidatos de una casilla cuesta tres OR en vez de construir conjuntos:
+
+```ts
+const mask = ALL_DIGITS & ~(rows[ROW[i]] | cols[COL[i]] | boxes[BOX[i]]);
+```
+
+La búsqueda siempre ramifica por la casilla vacía con menos candidatos, y se detiene en cuanto encuentra una segunda solución. No necesita contarlas todas, solo saber si hay más de una:
+
+```ts
+export function countSolutions(grid: Grid, limit = 2): number {
+  const state = initState(grid);
+  if (!state) return 0;
+  let count = 0;
+  search(state, () => ++count >= limit);
+  return count;
+}
+```
+
+## Apuntar a un nivel
+
+A un generador no le puedes pedir un puzzle difícil directamente. Solo puedes crear uno y graduarlo. Lo que hace el código es apuntar. Para Fácil elige al azar un objetivo de entre 36 y 45 pistas y deja de cavar cuando llega. Cada casilla se prueba una sola vez, así que si las que quedan no se pueden quitar sin crear una segunda solución, el puzzle se queda con más pistas que el objetivo. Para los otros niveles cava hasta que no se puede quitar ningún dígito más sin perder la unicidad. Si el resultado sale más difícil que el objetivo, devuelve pistas de la solución, de una en una, solo en casillas donde el solver lógico se atascó, y se queda cada una solo si el puzzle sigue en el nivel objetivo o por encima. Añadir una pista nunca rompe la unicidad, así que es seguro.
+
+Aun así, el resultado se gradúa con honestidad. Si un puzzle que apuntaba a Difícil sale Medio, va a la reserva de Medio.
+
+## No fiarme de mi propio solver
+
+Un fallo en una técnica podría graduar mal un puzzle sin que nadie se diera cuenta. Por eso, cuando el generador gradúa un puzzle, le pasa la solución conocida al solver lógico, y después de cada paso el solver comprueba que ningún dígito colocado es incorrecto y que no ha quitado ningún candidato bueno. Si una técnica se lo salta, lanza un error con su propio nombre. Además, un script de auditoría genera puzzles para cada nivel y comprueba cada uno con un verificador de referencia independiente. Lo ejecuta la CI.
+
+## Lo que me llevo
+
+La dificultad no depende de cómo se ve el tablero. Depende del razonamiento que el tablero te obliga a hacer. Cuando escribí ese razonamiento como una lista ordenada de técnicas, graduar se convirtió en un bucle y una tabla. La mayor parte del trabajo estuvo alrededor: demostrar la unicidad rápido, guiar al generador y asegurarme de que el solver no puede mentir sobre lo que ha hecho.

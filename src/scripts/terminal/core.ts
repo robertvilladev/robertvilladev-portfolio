@@ -17,6 +17,8 @@ export interface TermData {
   strings: Record<string, string>;
   fs: Dir;
   projects: Record<string, { title: string; url: string; repo?: string; demo?: string }>;
+  /** Note page URL per slug; `cat notes/<slug>` links to it (018). */
+  notes: Record<string, string>;
   /** Commits, newest first. `p` is a project slug or `portfolio`, `url` ends in the sha, `when` is relative (009). */
   log: { p: string; s: string; url: string; when: string }[];
 }

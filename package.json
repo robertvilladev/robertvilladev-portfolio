@@ -13,6 +13,8 @@
     "quality": "npm run test:unit && npm run check:size && npm run test:e2e && npm run lhci"
   },
   "dependencies": {
+    "@astrojs/mdx": "^8.1.0",
+    "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@fontsource-variable/space-grotesk": "^5.3.0",

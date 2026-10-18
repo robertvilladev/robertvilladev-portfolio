@@ -149,3 +149,33 @@ a:hover { color: var(--accent-2); }
   margin: 0; padding: 10px 14px; border: 1px solid var(--accent); background: var(--surface); color: var(--text); font-size: 13px;
 }
 .glitch-note:empty { display: none; }
+
+/* Code blocks (018): Shiki's css-variables theme mapped to the tokens, so code follows every theme.
+   Terminal chrome (bar and dots) is drawn with backgrounds, which stay put while the code scrolls sideways. */
+:root {
+  --astro-code-foreground: var(--text);
+  --astro-code-background: var(--surface-2);
+  --astro-code-token-constant: var(--accent);
+  --astro-code-token-string: var(--hash);
+  --astro-code-token-comment: var(--muted);
+  --astro-code-token-keyword: var(--accent-2);
+  --astro-code-token-parameter: var(--body);
+  --astro-code-token-function: var(--accent);
+  --astro-code-token-string-expression: var(--hash);
+  --astro-code-token-punctuation: var(--body);
+  --astro-code-token-link: var(--accent);
+}
+pre.astro-code {
+  margin-inline: 0; padding: 50px 18px 18px;
+  border: 1px solid var(--line);
+  font-family: var(--font-mono); font-size: 13.5px; line-height: 1.6; tab-size: 2;
+  background-image:
+    radial-gradient(circle at 20px 18px, #ff5f57 5px, transparent 5.5px),
+    radial-gradient(circle at 38px 18px, #febc2e 5px, transparent 5.5px),
+    radial-gradient(circle at 56px 18px, #28c840 5px, transparent 5.5px),
+    linear-gradient(var(--line), var(--line)),
+    linear-gradient(var(--surface), var(--surface));
+  background-size: auto, auto, auto, 100% 1px, 100% 36px;
+  background-position: 0 0, 0 0, 0 0, 0 36px, 0 0;
+  background-repeat: no-repeat;
+}

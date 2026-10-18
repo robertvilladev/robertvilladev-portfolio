@@ -3,6 +3,7 @@ import { getRelativeLocaleUrl } from 'astro:i18n';
 import { site } from '@/config';
 import { career } from '@/data/career';
 import { getProjects, githubData, repoData, slugOf, PORTFOLIO_REPO } from '@/lib/projects';
+import { getNotes } from '@/lib/notes';
 import { ago, type Repo } from '@/lib/github';
 import { langs, ui, type Lang } from '@/i18n/ui';
 import type { Dir, TermData } from '@/scripts/terminal/core';
@@ -35,6 +36,16 @@ export async function GET({ params }: { params: { lang: Lang } }) {
     };
   }
 
+  // Notes (018): title and summary only; `cat` adds the link from `notes`.
+  const notes: TermData['notes'] = {};
+  const noteFiles: Dir = {};
+  for (const n of await getNotes(lang)) {
+    notes[slugOf(n)] = getRelativeLocaleUrl(lang, `notes/${slugOf(n)}`);
+    noteFiles[slugOf(n)] = `# ${n.data.title}
+
+${n.data.summary}`;
+  }
+
   commits('portfolio', (await githubData())[PORTFOLIO_REPO]);
   log.sort((a, b) => b.when.localeCompare(a.when));
   for (const c of log) c.when = ago(c.when, lang);
@@ -44,6 +55,7 @@ export async function GET({ params }: { params: { lang: Lang } }) {
     'career.log': career.map((c) => `* ${c.hash} (${c.period[lang]}) ${c.role[lang]}\n  ${c.note[lang]}`).join('\n\n'),
     contact: [site.email && `email     ${site.email}`, ...Object.entries(links).map(([k, v]) => `${k.padEnd(9)} ${v}`)].filter(Boolean).join('\n'),
     projects: dirs,
+    notes: noteFiles,
   };
 
   const data: TermData = {
@@ -58,6 +70,7 @@ export async function GET({ params }: { params: { lang: Lang } }) {
     strings: Object.fromEntries(Object.entries(t).filter(([k]) => shared.some((s) => k.startsWith(s)))),
     fs,
     projects,
+    notes,
     log,
   };
   return new Response(JSON.stringify(data), { headers: { 'Content-Type': 'application/json' } });
