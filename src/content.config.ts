@@ -14,6 +14,8 @@ const projects = defineCollection({
     repo: z.url(),
     demo: z.url().optional(),
     draft: z.boolean().default(false),
+    /** Private repo: never linked or fetched (009). */
+    private: z.boolean().default(false),
   }),
 });
 

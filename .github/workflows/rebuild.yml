@@ -1,0 +1,19 @@
+# Daily rebuild so the build-time GitHub data (009) stays fresh. The hook is a Vercel deploy hook for main.
+name: Rebuild
+
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then echo "::notice::VERCEL_DEPLOY_HOOK is not set, skipping"; exit 0; fi
+          curl -fsS -X POST "$HOOK"

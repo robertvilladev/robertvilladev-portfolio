@@ -3,6 +3,7 @@ import { sep } from 'node:path';
 import { test, expect } from '@playwright/test';
 import { defaultLang, langs } from '../src/i18n/ui';
 import { site } from '../src/config';
+import { privateSlugs } from './projects';
 
 // Reads the built HTML directly: JSON-LD and meta are static, no browser needed.
 const pages = readdirSync('dist', { recursive: true, encoding: 'utf8' })
@@ -47,7 +48,8 @@ for (const p of projectPages) {
     const [ld] = p.ld;
     expect(ld).toMatchObject({ '@type': 'SoftwareSourceCode', inLanguage: p.lang, author: { '@id': homes[0].ld[0]['@id'] } });
     for (const k of ['name', 'description', 'url']) expect(ld[k], k).toBeTruthy();
-    expect(ld.codeRepository).toMatch(/^https:\/\//);
+    if (privateSlugs.some((s) => p.path.endsWith(`/projects/${s}/`))) expect(ld.codeRepository).toBeUndefined();
+    else expect(ld.codeRepository).toMatch(/^https:\/\//);
     expect(ld.keywords.length).toBeGreaterThan(0);
   });
 }

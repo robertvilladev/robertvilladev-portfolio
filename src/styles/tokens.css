@@ -1,4 +1,26 @@
 /* Design tokens, from the Claude Design canvas. Dark is the default. */
+
+/* Fallbacks matched to the web fonts' metrics so the font-display: swap doesn't move text (CLS).
+   Arial resized to Space Grotesk's metrics (width measured on the prose at weight 500, vertical
+   metrics from its OS/2 table). */
+@font-face {
+  font-family: 'Space Grotesk Fallback';
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('LiberationSans');
+  size-adjust: 108.1%;
+  ascent-override: 91%;
+  descent-override: 27%;
+  line-gap-override: 0%;
+}
+
+/* Courier New already has JetBrains Mono's 0.6em advance; only the vertical metrics differ. */
+@font-face {
+  font-family: 'JetBrains Mono Fallback';
+  src: local('Courier New'), local('CourierNewPSMT'), local('Liberation Mono'), local('LiberationMono');
+  ascent-override: 102%;
+  descent-override: 30%;
+  line-gap-override: 0%;
+}
+
 :root {
   color-scheme: dark;
   --bg: #0c0a18;
@@ -19,8 +41,8 @@
   --glow: rgb(46 242 208 / 0.14);
   --nav: rgb(12 10 24 / 0.82);
 
-  --font-display: 'Space Grotesk Variable', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --font-display: 'Space Grotesk Variable', 'Space Grotesk Fallback', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono Fallback', ui-monospace, monospace;
 
   --container: 1200px;
   --gutter: clamp(16px, 4vw, 24px);

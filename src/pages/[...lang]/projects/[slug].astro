@@ -4,7 +4,8 @@ import { getRelativeLocaleUrl } from 'astro:i18n';
 import Base from '@/layouts/Base.astro';
 import Terminal from '@/components/ui/Terminal.astro';
 import { projectLd } from '@/lib/jsonld';
-import { slugOf, projectPaths, type Project } from '@/lib/projects';
+import { repoData, slugOf, projectPaths, type Project } from '@/lib/projects';
+import { ago } from '@/lib/github';
 import { t as useT, type Lang } from '@/i18n/ui';
 
 export const getStaticPaths = projectPaths;
@@ -13,11 +14,14 @@ interface Props { lang: Lang; entry: Project }
 const { lang, entry } = Astro.props;
 const t = useT(lang);
 const slug = slugOf(entry);
-const { title, summary, stack, pid, repo, demo } = entry.data;
+const { title, summary, stack, pid, repo, demo, private: isPrivate } = entry.data;
 const { Content } = await render(entry);
+const gh = await repoData(entry);
+// Language colors: existing tokens only, so both themes work. `other` is always the last, neutral one.
+const swatch = (name: string, i: number) => (name === 'other' ? 'var(--ph)' : ['var(--accent)', 'var(--accent-2)', 'var(--hash)', 'var(--body)'][i]);
 ---
 
-<Base lang={lang} path={`projects/${slug}`} title={title} description={summary} image={`${lang}/${slug}`} jsonLd={projectLd(lang, Astro.site!, new URL(getRelativeLocaleUrl(lang, `projects/${slug}`), Astro.site).href, entry)}>
+<Base lang={lang} path={`projects/${slug}`} title={title} description={summary} image={`${lang}/${slug}`} jsonLd={projectLd(lang, Astro.site!, new URL(getRelativeLocaleUrl(lang, `projects/${slug}`), Astro.site).href, entry, gh)}>
   <section class="detail pixgrid">
     <div class="container stack">
       <a class="back mono" href={`${getRelativeLocaleUrl(lang)}#p-${slug}`}>&lt; {t('project.back')}</a>
@@ -33,9 +37,26 @@ const { Content } = await render(entry);
               <p class="mono label">{t('project.stack')}</p>
               <ul class="tags">{stack.map((s) => <li class="tag">{s}</li>)}</ul>
             </div>
+            {gh && gh.languages.length > 0 && (
+              <div>
+                <p class="mono label">{t('project.languages')}</p>
+                <div class="langbar" aria-hidden="true">{gh.languages.map((l, i) => <span style={`flex-grow:${l.pct};background:${swatch(l.name, i)}`} />)}</div>
+                <ul class="langs mono">{gh.languages.map((l, i) => <li><span class="sw" style={`background:${swatch(l.name, i)}`} aria-hidden="true" />{l.name} {l.pct}%</li>)}</ul>
+              </div>
+            )}
+            {gh && gh.commits.length > 0 && (
+              <div>
+                <p class="prompt">~ $ git log --oneline -3</p>
+                <ul class="log mono">
+                  {gh.commits.slice(0, 3).map((c) => (
+                    <li><a href={c.url} target="_blank" rel="noopener">{c.sha.slice(0, 7)}</a> {c.subject} <span class="muted">· <time datetime={c.date}>{ago(c.date, lang)}</time></span></li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <div class="links">
               {demo && <a class="btn btn--primary" href={demo} target="_blank" rel="noopener">{t('project.demo')}</a>}
-              <a class:list={['btn', { 'btn--primary': !demo }]} href={repo} target="_blank" rel="noopener">{t('project.source')}</a>
+              {isPrivate ? <p class="tag private">{t('projects.private')}</p> : <a class:list={['btn', { 'btn--primary': !demo }]} href={repo} target="_blank" rel="noopener">{t('project.source')}</a>}
             </div>
           </div>
         </div>
@@ -55,7 +76,15 @@ const { Content } = await render(entry);
   .title { font-size: clamp(36px, 5vw, 52px); line-height: 1; letter-spacing: -0.02em; font-weight: 700; }
   .label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
   .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
-  .links { display: flex; flex-wrap: wrap; gap: 12px; }
+  .links { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .private { color: var(--accent-2); }
+  .langbar { display: flex; gap: 2px; height: 8px; margin-bottom: 10px; }
+  .langs { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--body); }
+  .langs li { display: flex; align-items: center; gap: 6px; }
+  .sw { width: 8px; height: 8px; }
+  .log { margin: 8px 0 0; padding: 0; list-style: none; font-size: 13px; line-height: 1.7; color: var(--body); overflow-wrap: anywhere; }
+  .log a { color: var(--hash); text-decoration: underline; text-underline-offset: 3px; }
+  .muted { color: var(--muted); }
   .prose { color: var(--body); line-height: 1.7; }
   .prose :global(p + p), .prose :global(ul) { margin-top: 12px; }
   .prose :global(ul) { padding-left: 20px; }

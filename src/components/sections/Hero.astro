@@ -2,10 +2,16 @@
 import Terminal from '@/components/ui/Terminal.astro';
 import { t as useT, type Lang } from '@/i18n/ui';
 import { site } from '@/config';
+import { ago, latest } from '@/lib/github';
+import { githubData } from '@/lib/projects';
 
 interface Props { lang: Lang; slugs: string[] }
 const { lang, slugs } = Astro.props;
 const t = useT(lang);
+
+// `git log -1` from the newest public commit (009). Without data the line is left out and nothing shifts.
+const last = latest(await githubData());
+const d = (s: number) => `--d:${(s + (last ? 1.1 : 0)).toFixed(1)}s`;
 
 // Pixel blocks the screen breaks into during the dive (deterministic pattern, no runtime randomness).
 const COLS = 12, ROWS = 8;
@@ -28,12 +34,18 @@ const cells = Array.from({ length: COLS * ROWS }, (_, i) => {
         <p class="fade" style="--d:2.5s">{site.stack}</p>
         <p class="type gap" style="--d:3s"><span class="ps1">~ $</span> ls ~/side-projects</p>
         <p class="fade hero__ls" style="--d:3.7s">{slugs.map((s) => <span>{s}/</span>)}</p>
-        <p class="fade gap" style="--d:4.1s"><span class="ps1">~ $</span> <span class="type hero__hint" style="--d:4.5s"><span class="hint-key">{t('hero.hint')}</span><span class="hint-touch">{t('hero.hint.touch')}</span></span> <span class="cursor hero__caret" aria-hidden="true" /></p>
+        {last && (
+          <>
+            <p class="type gap" style="--d:4.1s"><span class="ps1">~ $</span> git log -1 --oneline</p>
+            <p class="fade hero__log" style="--d:4.8s"><a href={last.url} target="_blank" rel="noopener">{last.sha.slice(0, 7)}</a> <span class="muted">({last.repo})</span> {last.subject} <span class="muted">· <time datetime={last.date}>{ago(last.date, lang)}</time></span></p>
+          </>
+        )}
+        <p class="fade gap" style={d(4.1)}><span class="ps1">~ $</span> <span class="type hero__hint" style={d(4.5)}><span class="hint-key">{t('hero.hint')}</span><span class="hint-touch">{t('hero.hint.touch')}</span></span> <span class="cursor hero__caret" aria-hidden="true" /></p>
       </div>
     </Terminal>
 
     <div data-dive-fade>
-      <a class="hero__scroll mono fade bob" href="#about" style="--d:4.4s">
+      <a class="hero__scroll mono fade bob" href="#about" style={d(4.4)}>
         <span>{t('hero.scroll')}</span>
         <span class="chev" aria-hidden="true"><i /><i /><i /></span>
       </a>
@@ -53,6 +65,7 @@ const cells = Array.from({ length: COLS * ROWS }, (_, i) => {
   .hero__screen { padding: clamp(20px, 4vw, 32px) clamp(18px, 4vw, 36px) 40px; font-size: clamp(14px, 1.6vw, 17px); line-height: 1.75; }
   .hero__name { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 7vw, 88px); line-height: 1; letter-spacing: -0.02em; margin: 12px 0 8px; }
   .hero__ls { display: flex; flex-wrap: wrap; gap: 4px 24px; color: var(--accent-2); }
+  .hero__log a { color: var(--hash); text-decoration: underline; text-underline-offset: 3px; }
   .hero__caret { display: inline-block; width: 10px; height: 20px; background: var(--accent); vertical-align: -3px; }
   .hero__hint { display: inline-block; color: var(--muted); }
   .hint-touch { display: none; }

@@ -1,6 +1,7 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { slugOf, type Project } from '@/lib/projects';
+import { repoData, slugOf, type Project } from '@/lib/projects';
+import { ago, status } from '@/lib/github';
 import { t as useT, type Lang } from '@/i18n/ui';
 
 interface Props { project: Project; lang: Lang }
@@ -8,6 +9,8 @@ const { project, lang } = Astro.props;
 const t = useT(lang);
 const slug = slugOf(project);
 const { title, summary, stack, pid } = project.data;
+const gh = await repoData(project);
+const state = gh ? status(gh.pushedAt) : 'running';
 ---
 
 <li class="cell" id={`p-${slug}`} data-zoom>
@@ -15,13 +18,15 @@ const { title, summary, stack, pid } = project.data;
     <div class="card__bar mono">
       <span>PID {pid}</span>
       <span class="card__slug">{slug}</span>
-      <span class="card__run"><span class="led pulse" aria-hidden="true" />{t('projects.running')}</span>
+      <span class:list={['card__run', { 'card__run--idle': state !== 'running' }]}><span class:list={['led', { pulse: state === 'running' }]} aria-hidden="true" />{t(`projects.${state}`)}</span>
     </div>
     <div class="card__shot pixgrid scan mono" aria-hidden="true">[{slug}]</div>
     <div class="card__body">
       <h3 class="card__title">{title}</h3>
+      {project.data.private && <p class="tag card__private">{t('projects.private')}</p>}
       <p class="card__summary">{summary}</p>
       <ul class="card__stack">{stack.map((s) => <li class="tag">{s}</li>)}</ul>
+      {gh && <p class="card__updated mono">{t('projects.updated')} <time datetime={gh.pushedAt}>{ago(gh.pushedAt, lang)}</time></p>}
     </div>
   </a>
 </li>
@@ -40,6 +45,10 @@ const { title, summary, stack, pid } = project.data;
   }
   .card__slug { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .card__run { display: flex; gap: 6px; align-items: center; color: var(--accent); }
+  .card__run--idle { color: var(--muted); }
+  .card__run--idle .led { background: var(--ph); }
+  .card__updated { font-size: 12px; color: var(--muted); }
+  .card__private { align-self: flex-start; color: var(--accent-2); }
   .led { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
   .card__shot { height: 180px; display: grid; place-items: center; font-size: 12px; color: var(--ph); border-bottom: 1px solid var(--line); }
   .card__body { padding: 20px; display: flex; flex-direction: column; gap: 12px; flex-grow: 1; }
