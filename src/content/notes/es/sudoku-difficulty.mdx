@@ -102,7 +102,7 @@ export function countSolutions(grid: Grid, limit = 2): number {
 
 ## Apuntar a un nivel
 
-A un generador no le puedes pedir un puzzle difícil directamente. Solo puedes crear uno y graduarlo. Lo que hace el código es apuntar. Para Fácil deja de cavar entre 36 y 45 pistas. Para los otros niveles cava hasta que no se puede quitar ningún dígito más sin perder la unicidad. Si el resultado sale más difícil que el objetivo, devuelve pistas de la solución, de una en una, solo en casillas donde el solver lógico se atascó, y se queda cada una solo si el puzzle sigue en el nivel objetivo o por encima. Añadir una pista nunca rompe la unicidad, así que es seguro.
+A un generador no le puedes pedir un puzzle difícil directamente. Solo puedes crear uno y graduarlo. Lo que hace el código es apuntar. Para Fácil elige al azar un objetivo de entre 36 y 45 pistas y deja de cavar cuando llega. Cada casilla se prueba una sola vez, así que si las que quedan no se pueden quitar sin crear una segunda solución, el puzzle se queda con más pistas que el objetivo. Para los otros niveles cava hasta que no se puede quitar ningún dígito más sin perder la unicidad. Si el resultado sale más difícil que el objetivo, devuelve pistas de la solución, de una en una, solo en casillas donde el solver lógico se atascó, y se queda cada una solo si el puzzle sigue en el nivel objetivo o por encima. Añadir una pista nunca rompe la unicidad, así que es seguro.
 
 Aun así, el resultado se gradúa con honestidad. Si un puzzle que apuntaba a Difícil sale Medio, va a la reserva de Medio.
 

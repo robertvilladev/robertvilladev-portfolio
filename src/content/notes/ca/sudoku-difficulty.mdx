@@ -102,7 +102,7 @@ export function countSolutions(grid: Grid, limit = 2): number {
 
 ## Apuntar a un nivell
 
-A un generador no li pots demanar un puzzle difícil directament. Només en pots crear un i graduar-lo. El que fa el codi és apuntar. Per a Fàcil deixa de cavar entre 36 i 45 pistes. Per als altres nivells cava fins que no es pot treure cap dígit més sense perdre la unicitat. Si el resultat surt més difícil que l'objectiu, retorna pistes de la solució, d'una en una, només a caselles on el solver lògic es va encallar, i es queda cadascuna només si el puzzle continua al nivell objectiu o per sobre. Afegir una pista mai no trenca la unicitat, així que és segur.
+A un generador no li pots demanar un puzzle difícil directament. Només en pots crear un i graduar-lo. El que fa el codi és apuntar. Per a Fàcil tria a l'atzar un objectiu d'entre 36 i 45 pistes i deixa de cavar quan hi arriba. Cada casella es prova una sola vegada, així que si les que queden no es poden treure sense crear una segona solució, el puzzle es queda amb més pistes que l'objectiu. Per als altres nivells cava fins que no es pot treure cap dígit més sense perdre la unicitat. Si el resultat surt més difícil que l'objectiu, retorna pistes de la solució, d'una en una, només a caselles on el solver lògic es va encallar, i es queda cadascuna només si el puzzle continua al nivell objectiu o per sobre. Afegir una pista mai no trenca la unicitat, així que és segur.
 
 Tot i així, el resultat es gradua amb honestedat. Si un puzzle que apuntava a Difícil surt Mitjà, va a la reserva de Mitjà.
 
