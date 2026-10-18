@@ -34,6 +34,7 @@ function build(data: TermData): Ctx {
   dialog = document.createElement('dialog');
   dialog.className = 'tx mono';
   dialog.dataset.lenisPrevent = '';
+  dialog.dataset.noTrail = '';
   dialog.setAttribute('aria-label', t('term.title'));
   dialog.innerHTML = `<div class="tx__bar"><span class="tx__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="tx__title">robert@villa — zsh</span><button class="tx__x" type="button"><span aria-hidden="true">×</span></button></div><div class="tx__out" role="log" aria-live="polite" tabindex="0"></div><form class="tx__form"><span class="tx__ps1" aria-hidden="true"></span><input class="tx__in" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="send"></form>`;
   const $ = <T extends HTMLElement>(s: string) => dialog.querySelector<T>(s)!;
