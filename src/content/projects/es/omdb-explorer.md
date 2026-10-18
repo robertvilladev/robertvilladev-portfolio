@@ -1,6 +1,6 @@
 ---
 title: OMDb Explorer
-summary: Buscador de películas sobre la API de OMDb, hecho para aprender los flujos de estado de Redux Toolkit.
+summary: Un buscador de películas sobre la API de OMDb, hecho para aprender cómo fluye el estado en Redux Toolkit.
 stack: [react, typescript, redux toolkit]
 pid: '0808'
 order: 6

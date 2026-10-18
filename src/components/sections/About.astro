@@ -5,9 +5,9 @@ import { t as useT, type Lang } from '@/i18n/ui';
 interface Props { lang: Lang }
 const t = useT(Astro.props.lang);
 const skills = [
-  { dir: 'frontend/', items: 'react · angular · vue · next.js · astro · typescript' },
+  { dir: 'frontend/', items: 'react · angular · vue · next.js · astro · typescript · gsap' },
   { dir: 'backend/', items: 'node · express · fastify · fastapi · django rest · postgresql' },
-  { dir: 'motion/', items: 'gsap · scrolltrigger · css animation · phaser' },
+  { dir: 'quality/', items: 'testing · e2e · ci · docker' },
 ];
 ---
 
@@ -16,7 +16,7 @@ const skills = [
     <div class="about__text" data-reveal>
       <p class="prompt">~ $ cat about.md</p>
       <h2 class="h2">{t('about.title.a')} <span class="hl">{t('about.title.b')}</span>.</h2>
-      <p class="lead">{t('about.body')}</p>
+      {t('about.body').split('\n\n').map((p) => <p class="lead">{p}</p>)}
     </div>
     <Terminal title="~ $ ls -la ~/skills" class="about__skills" data-parallax="0.06">
       <ul class="skills mono">

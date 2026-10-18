@@ -1,6 +1,6 @@
 ---
 title: Sudoku 2077
-summary: Una "máquina de sudokus" que genera puzzles, los clasifica según las técnicas necesarias para resolverlos y los sirve por una API REST.
+summary: Un motor de sudokus que genera puzzles y los clasifica por las técnicas que exige resolverlos, servidos por una API REST.
 stack: [typescript, fastify, prisma, postgresql, react, flutter]
 pid: '2077'
 order: 1

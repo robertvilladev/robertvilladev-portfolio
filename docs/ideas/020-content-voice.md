@@ -2,7 +2,7 @@
 
 | Status | Phase | Category | Impact | Effort | Perf cost |
 | --- | --- | --- | --- | --- | --- |
-| ready | 4 · Depth | Content & data | H | M | none |
+| done | 4 · Depth | Content & data | H | M | none |
 
 **Depends on:** —
 
@@ -83,7 +83,7 @@ Sites read: Brittany Chiang, Lee Robinson, Josh Comeau, Cassie Evans, Paco Cours
 - Career headings show the job titles he held ("Full Stack Engineer @ ERNI"). Those are facts, so they stay, written as "Full-Stack" to follow the guide.
 
 ## Done when
-- [ ] `docs/CONTENT.md` exists and is linked from `docs/README.md` and `CLAUDE.md`.
-- [ ] Every string listed in Scope is rewritten in en, es and ca and follows the guide.
-- [ ] Build, unit, size and e2e checks pass, and Lighthouse SEO is 100.
-- [ ] Visual check at desktop and 375 px in all three locales, OG images included.
+- [x] `docs/CONTENT.md` exists and is linked from `docs/README.md` and `CLAUDE.md`.
+- [x] Every string listed in Scope is rewritten in en, es and ca and follows the guide.
+- [x] Build, unit, size and e2e checks pass, and Lighthouse SEO is 100.
+- [x] Visual check at desktop and 375 px in all three locales, OG images included.

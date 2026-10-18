@@ -1,6 +1,6 @@
 ---
 title: OMDb Explorer
-summary: Movie search on top of the OMDb API, built to learn Redux Toolkit state flows.
+summary: A movie search app on the OMDb API, built to learn how state flows through Redux Toolkit.
 stack: [react, typescript, redux toolkit]
 pid: '0808'
 order: 6

@@ -1,6 +1,6 @@
 ---
 title: Sudoku 2077
-summary: A "sudoku machine" that generates puzzles, grades them by the techniques needed to solve them, and serves them over a REST API.
+summary: A sudoku engine that generates puzzles and grades them by the solving techniques they need, served over a REST API.
 stack: [typescript, fastify, prisma, postgresql, react, flutter]
 pid: '2077'
 order: 1
