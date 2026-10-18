@@ -143,9 +143,3 @@ a:hover { color: var(--accent-2); }
 }
 @keyframes glitch-in { from { opacity: 0; } }
 @keyframes glitch-scan { to { transform: translateY(4px); } }
-/* Reduced-motion stand-in for the effect. */
-.glitch-note {
-  position: fixed; right: 16px; bottom: 16px; z-index: 95; max-width: min(360px, calc(100vw - 32px));
-  margin: 0; padding: 10px 14px; border: 1px solid var(--accent); background: var(--surface); color: var(--text); font-size: 13px;
-}
-.glitch-note:empty { display: none; }

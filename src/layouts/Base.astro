@@ -9,6 +9,7 @@ import Footer from '@/components/layout/Footer.astro';
 import Boot from '@/components/layout/Boot.astro';
 import { languages, langs, defaultLang, t as useT, type Lang } from '@/i18n/ui';
 import { themeNames } from '@/lib/themes';
+import { getProjects, slugOf } from '@/lib/projects';
 
 interface Props {
   lang: Lang;
@@ -27,11 +28,12 @@ const t = useT(lang);
 const pageTitle = title ? `${title} · Robert Villa` : t('meta.title');
 const pageDescription = description ?? t('meta.description');
 const imageUrl = new URL(`/og/${image}.png`, Astro.site).href;
+const projects = (await getProjects(defaultLang)).map(slugOf).join(' '); // for the explorer achievement (013)
 const urlFor = (l: Lang) => new URL(getRelativeLocaleUrl(l, path), Astro.site).href;
 ---
 
 <!doctype html>
-<html lang={lang} data-theme="dark">
+<html lang={lang} data-theme="dark" data-projects={projects}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -112,13 +114,13 @@ const urlFor = (l: Lang) => new URL(getRelativeLocaleUrl(l, path), Astro.site).h
       <slot />
     </main>
     <Footer lang={lang} />
-    <p class="glitch-note mono" role="status" data-glitch-note data-msg={t('term.glitch.reduced')}></p>
     <script>
       import '@/scripts/boot';
       import '@/scripts/theme';
       import '@/scripts/terminal';
       import '@/scripts/motion';
       import '@/scripts/sparkle';
+      import '@/scripts/achievements';
       import '@/scripts/konami';
       import '@/scripts/trail';
     </script>

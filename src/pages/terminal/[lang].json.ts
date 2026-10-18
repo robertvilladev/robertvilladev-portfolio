@@ -10,7 +10,7 @@ import type { Dir, TermData } from '@/scripts/terminal/core';
 export const getStaticPaths = () => langs.map((lang) => ({ params: { lang } }));
 
 // ui.ts keys the terminal reads: its own plus a few shared with the page.
-const shared = ['term.', '404.', 'hero.role', 'lang.egg', 'theme.name', 'projects.private'];
+const shared = ['term.', 'ach.', '404.', 'hero.role', 'lang.egg', 'theme.name', 'projects.private'];
 
 export async function GET({ params }: { params: { lang: Lang } }) {
   const { lang } = params;

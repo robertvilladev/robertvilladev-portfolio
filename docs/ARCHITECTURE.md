@@ -11,7 +11,7 @@ src/
   content/projects/<lang>/  one markdown file per project per language
   data/career.ts            timeline entries, localized inline
   i18n/ui.ts                locales (single source) + UI strings + t()
-  lib/                      data helpers (projects.ts, jsonld.ts, github.ts: build-time GitHub data, themes.ts: the theme list)
+  lib/                      data helpers (projects.ts, jsonld.ts, github.ts: build-time GitHub data, themes.ts: the theme list, achievements.ts: achievement state (013))
   layouts/Base.astro        <head>, SEO, theme pre-paint, page shell, client scripts
   pages/[...lang]/          every route, generated for every locale
   components/
@@ -65,7 +65,7 @@ Measured on the home page, gzipped. Current: about 50 KB JS, 7 KB CSS, 5 KB HTML
 | --- | --- |
 | JS loaded on first paint | ≤ 60 KB |
 | Any feature not needed for first paint | loaded with dynamic `import()` on intent (key press, click, in view) |
-| Lazy terminal (shell chunk + one `/terminal/<lang>.json`) | ≤ 10 KB |
+| Lazy terminal (shell chunk + one `/terminal/<lang>.json`) + every other lazy chunk (achievement toast, 013) | ≤ 14 KB |
 | Lighthouse (mobile) | Performance ≥ 95, Accessibility ≥ 95, SEO 100 |
 | CLS | 0 (animations use transform/opacity/clip-path only) |
 | Images | `astro:assets`, AVIF/WebP, explicit size, lazy below the fold |

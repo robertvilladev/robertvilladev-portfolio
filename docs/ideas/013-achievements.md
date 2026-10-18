@@ -2,7 +2,7 @@
 
 | Status | Phase | Category | Impact | Effort | Perf cost |
 | --- | --- | --- | --- | --- | --- |
-| ready | 3 · Delight | Delight | M | S | low |
+| done | 3 · Delight | Delight | M | S | low |
 
 **Depends on:** [007](007-interactive-terminal.md), [012](012-konami-glitch.md)
 
@@ -60,8 +60,8 @@ Names and hints are in `ui.ts` (`ach.<id>`, `ach.<id>.hint`) for en, es and ca.
 Toasts in an `aria-live="polite"` region; never cover content for long. Plus the budget and rules in [ARCHITECTURE.md](../ARCHITECTURE.md).
 
 ## Done when
-- [ ] Every unlock in the table works, persists per visitor and shows a toast with the right count
-- [ ] Repeat unlocks do nothing; `completionist` unlocks itself
-- [ ] Toasts queue, wait for the boot panel, survive a navigation and never take focus; no slide under reduced motion
-- [ ] `achievements` lists progress, dates and hints, shows a trophy at 12/12, and `reset` asks for `y`
-- [ ] Unit tests (unlock, dedupe, completionist, counters, theme and project sets) and e2e tests pass; first paint ≤ 60 KB, lazy ≤ 14 KB
+- [x] Every unlock in the table works, persists per visitor and shows a toast with the right count
+- [x] Repeat unlocks do nothing; `completionist` unlocks itself
+- [x] Toasts queue, wait for the boot panel, survive a navigation and never take focus; no slide under reduced motion
+- [x] `achievements` lists progress, dates and hints, shows a trophy at 12/12, and `reset` asks for `y`
+- [x] Unit tests (unlock, dedupe, completionist, counters, theme and project sets) and e2e tests pass; first paint ≤ 60 KB, lazy ≤ 14 KB

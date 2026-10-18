@@ -1,6 +1,6 @@
 // Fails when a gzipped budget from docs/ARCHITECTURE.md is exceeded:
 // - first paint: the JS the home page loads (its module scripts and their static imports) ≤ 60 KB
-// - lazy terminal (007): every _astro asset no page loads up front + the largest /terminal/<lang>.json ≤ 10 KB
+// - lazy terminal (007): every _astro asset no page loads up front + the largest /terminal/<lang>.json ≤ 14 KB
 import { readdirSync, readFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 
@@ -39,5 +39,5 @@ function budget(name, files, limit) {
 }
 
 budget('first-paint JS', [...closure(read('dist/index.html'))].map((f) => `_astro/${f}`), 60);
-budget('lazy terminal', [...lazy.map((f) => `_astro/${f}`), json], 10);
+budget('lazy terminal', [...lazy.map((f) => `_astro/${f}`), json], 14);
 if (failed) process.exit(1);
