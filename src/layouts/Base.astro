@@ -9,6 +9,7 @@ import Footer from '@/components/layout/Footer.astro';
 import Boot from '@/components/layout/Boot.astro';
 import { languages, langs, defaultLang, t as useT, type Lang } from '@/i18n/ui';
 import { themeNames } from '@/lib/themes';
+import { site } from '@/config';
 
 interface Props {
   lang: Lang;
@@ -43,6 +44,7 @@ const urlFor = (l: Lang) => new URL(getRelativeLocaleUrl(l, path), Astro.site).h
     {path === '' && <link rel="expect" href="#projects" blocking="render" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} · ${t('notes.title')}`} href={new URL(`${getRelativeLocaleUrl(lang)}rss.xml`, Astro.site).href} />
     <meta name="theme-color" content="#0c0a18" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />

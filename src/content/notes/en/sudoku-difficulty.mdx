@@ -1,0 +1,115 @@
+---
+title: What makes a sudoku hard?
+summary: Counting the givens doesn't tell you how hard a sudoku is. In sudoku-2077 I grade each puzzle by the hardest technique a human needs to solve it.
+date: 2026-10-18
+tags: [sudoku, typescript, algorithms]
+project: sudoku-2077
+---
+
+The usual answer is "fewer givens". It sounds right: fewer numbers on the board means more work. But a puzzle with few givens can still fall apart with simple steps, and one with more givens can leave you stuck. When I built [sudoku-2077](https://github.com/robertvilladev/sudoku-2077) I wanted the difficulty label to mean something, so I stopped counting givens. Instead, the code asks a different question: **what is the hardest thing a person has to know to solve this puzzle?**
+
+## Solve it like a human
+
+The grading starts with a solver that never guesses. It keeps a list of candidates for every empty cell (the digits that don't clash with the row, column and box) and works through 13 techniques, from the easiest to the hardest:
+
+1. Hidden single
+2. Naked single
+3. Pointing pair
+4. Box/line reduction
+5. Naked pair
+6. Hidden pair
+7. X-Wing
+8. Naked triple
+9. Swordfish
+10. Hidden triple
+11. XY-Wing
+12. XYZ-Wing
+13. Naked quad
+
+Singles place a digit. Everything else removes candidates until a single shows up again. A naked pair, for example, is two cells in a unit that can only hold the same two digits, so no other cell in that unit can hold them. An XY-Wing is a cell with two candidates, X and Y, that sees two other cells: one with X and Z, one with Y and Z. Whichever digit the first cell takes, one of the other two must be Z, so Z can go from every cell that sees both of them.
+
+The important part is the order. On every pass the solver starts again from the top of the list, applies the first technique that makes progress, and starts over:
+
+```ts
+while (progressed && grid.includes(0)) {
+  progressed = false;
+  for (const technique of TECHNIQUES) {
+    if (technique.apply(grid, candidates)) {
+      techniqueCounts[technique.name] = (techniqueCounts[technique.name] ?? 0) + 1;
+      if (options.solution) assertConsistent(grid, candidates, options.solution, technique.name);
+      progressed = true;
+      break;
+    }
+  }
+}
+```
+
+Because it always tries the easy techniques first, an XYZ-Wing only shows up in the count when nothing simpler would have worked at that point. So the count records what the puzzle *needs*, not what the solver happened to try.
+
+## From techniques to a tier
+
+Each technique has a weight and a tier. The weights are roughly ten times the Sudoku Explainer rating, a well-known scale for rating sudoku techniques. The tiers are mine:
+
+| Tier | Techniques |
+| --- | --- |
+| Easy | hidden single, naked single |
+| Medium | pointing pair, box/line reduction, naked pair, hidden pair |
+| Hard | X-Wing, naked triple, Swordfish, hidden triple, XY-Wing, XYZ-Wing, naked quad |
+| Hardcore | the solver gets stuck |
+
+They don't follow the Sudoku Explainer order exactly. X-Wing rates lower than a hidden pair there, but to most players it looks like an advanced pattern, so I put it in Hard with the triples, Swordfish and the wings.
+
+The classifier itself is short. The tier is the highest tier of any technique used. The score adds up weight times number of uses, so it also grows with how many hard steps a puzzle needs, which helps to order puzzles inside a tier:
+
+```ts
+export function classifyDifficulty(result: LogicalSolveResult): ClassificationResult {
+  let score = 0;
+  let difficulty: Difficulty = Difficulty.EASY;
+  for (const [name, count] of Object.entries(result.techniqueCounts) as Array<[TechniqueName, number]>) {
+    const info = TECHNIQUE_INFO[name];
+    score += info.weight * count;
+    if (TIER_RANK[info.tier] > TIER_RANK[difficulty]) difficulty = info.tier;
+  }
+
+  if (!result.solved) return { difficulty: Difficulty.HARDCORE, score: HARDCORE_SCORE_BASE + score };
+  return { difficulty, score };
+}
+```
+
+If the solver can't finish, the puzzle needs something beyond the list, like chains, forcing nets or plain guessing. That's Hardcore, and its score starts at 1000 so it always sorts above every puzzle the solver could finish.
+
+## Checking that there is only one solution
+
+None of this matters if the puzzle has two solutions. A real sudoku has exactly one, and the generator has to prove it every time it removes a digit. It starts from a full random grid and "digs holes": it removes a cell, and only keeps the removal if the puzzle still has a single solution. That check runs once per removal attempt, so it's the hot path of the whole generator.
+
+For that I wrote a separate brute-force solver, built for speed instead of for explaining anything. Each row, column and box keeps a 9-bit mask of the digits it already uses. Finding a cell's candidates takes three ORs instead of building sets:
+
+```ts
+const mask = ALL_DIGITS & ~(rows[ROW[i]] | cols[COL[i]] | boxes[BOX[i]]);
+```
+
+The search always branches on the empty cell with the fewest candidates, and it stops as soon as it finds a second solution. It never needs to count them all, it only needs to know whether there is more than one:
+
+```ts
+export function countSolutions(grid: Grid, limit = 2): number {
+  const state = initState(grid);
+  if (!state) return 0;
+  let count = 0;
+  search(state, () => ++count >= limit);
+  return count;
+}
+```
+
+## Aiming at a tier
+
+You can't ask a generator for a hard puzzle directly. You can only make one and grade it. What the code does is aim. For Easy it stops digging at 36 to 45 givens. For the other tiers it digs until no more digits can be removed without losing uniqueness. If the result lands harder than the target, it adds givens back from the solution, one at a time, only in cells the logical solver got stuck on, and keeps each one only if the puzzle stays at or above the target tier. Adding a given can never break uniqueness, so this is safe.
+
+The result is still graded honestly. If a puzzle aimed at Hard comes out Medium, it goes into the Medium pool.
+
+## Not trusting my own solver
+
+A bug in one technique could quietly grade a puzzle wrong. So when the generator grades a puzzle, it passes the known solution to the logical solver, and after every step the solver checks that no placed digit is wrong and no true candidate was removed. If a technique breaks that, it throws an error with its own name. On top of that, an audit script generates puzzles for every tier and checks each one against a separate reference checker. CI runs it.
+
+## What I took from it
+
+Difficulty isn't a property of how the board looks. It's a property of the reasoning the board forces on you. Once I wrote the reasoning down as an ordered list of techniques, grading became a loop and a lookup table. Most of the work was in the parts around it: proving uniqueness fast, steering the generator, and making sure the solver can't lie about what it did.

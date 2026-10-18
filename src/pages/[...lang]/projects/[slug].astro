@@ -6,6 +6,7 @@ import Terminal from '@/components/ui/Terminal.astro';
 import { projectLd } from '@/lib/jsonld';
 import { repoData, slugOf, projectPaths, type Project } from '@/lib/projects';
 import { ago } from '@/lib/github';
+import { getNotes } from '@/lib/notes';
 import { t as useT, type Lang } from '@/i18n/ui';
 
 export const getStaticPaths = projectPaths;
@@ -17,6 +18,7 @@ const slug = slugOf(entry);
 const { title, summary, stack, pid, repo, demo, private: isPrivate } = entry.data;
 const { Content } = await render(entry);
 const gh = await repoData(entry);
+const notes = (await getNotes(lang)).filter((n) => n.data.project === slug);
 // Language colors: existing tokens only, so both themes work. `other` is always the last, neutral one.
 const swatch = (name: string, i: number) => (name === 'other' ? 'var(--ph)' : ['var(--accent)', 'var(--accent-2)', 'var(--hash)', 'var(--body)'][i]);
 ---
@@ -54,6 +56,12 @@ const swatch = (name: string, i: number) => (name === 'other' ? 'var(--ph)' : ['
                 </ul>
               </div>
             )}
+            {notes.length > 0 && (
+              <div>
+                <p class="mono label">{t('notes.related')}</p>
+                <ul class="notes">{notes.map((n) => <li><a href={getRelativeLocaleUrl(lang, `notes/${slugOf(n)}`)}>{n.data.title}</a></li>)}</ul>
+              </div>
+            )}
             <div class="links">
               {demo && <a class="btn btn--primary" href={demo} target="_blank" rel="noopener">{t('project.demo')}</a>}
               {isPrivate ? <p class="tag private">{t('projects.private')}</p> : <a class:list={['btn', { 'btn--primary': !demo }]} href={repo} target="_blank" rel="noopener">{t('project.source')}</a>}
@@ -85,6 +93,9 @@ const swatch = (name: string, i: number) => (name === 'other' ? 'var(--ph)' : ['
   .log { margin: 8px 0 0; padding: 0; list-style: none; font-size: 13px; line-height: 1.7; color: var(--body); overflow-wrap: anywhere; }
   .log a { color: var(--hash); text-decoration: underline; text-underline-offset: 3px; }
   .muted { color: var(--muted); }
+  .notes { margin: 0; padding: 0; list-style: none; line-height: 1.7; }
+  .notes a { text-decoration: underline; text-underline-offset: 3px; }
+  .notes a::before { content: '> '; }
   .prose { color: var(--body); line-height: 1.7; }
   .prose :global(p + p), .prose :global(ul) { margin-top: 12px; }
   .prose :global(ul) { padding-left: 20px; }

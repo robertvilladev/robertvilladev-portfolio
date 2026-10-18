@@ -21,6 +21,7 @@ const links = [
     <div class="nav__right">
       <ul class="nav__links">
         {links.map(([id, label]) => <li><a class="navlink" href={`${home}#${id}`}>{label}</a></li>)}
+        <li><a class="navlink" href={getRelativeLocaleUrl(lang, 'notes')}>{t('nav.notes')}</a></li>
       </ul>
       <div class="lang" role="group" aria-label={t('lang.label')}>
         {langs.map((l) => (

@@ -1,0 +1,56 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import Base from '@/layouts/Base.astro';
+import Terminal from '@/components/ui/Terminal.astro';
+import { formatDate, getNotes } from '@/lib/notes';
+import { slugOf } from '@/lib/projects';
+import { langs, langParam, t as useT, type Lang } from '@/i18n/ui';
+
+export const getStaticPaths = () => langs.map((lang) => ({ params: { lang: langParam(lang) }, props: { lang } }));
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const notes = await getNotes(lang);
+---
+
+<Base lang={lang} path="notes" title={t('notes.title')} description={t('notes.description')}>
+  <section class="notes pixgrid">
+    <div class="container stack">
+      <a class="back mono" href={getRelativeLocaleUrl(lang)}>&lt; {t('project.back')}</a>
+      <Terminal title="~/notes" class="window">
+        <div class="body">
+          <p class="prompt">~ $ cat notes/</p>
+          <h1 class="title">{t('notes.title')}</h1>
+          <p class="lead">{t('notes.description')}</p>
+          <ol class="list">
+            {notes.map((n) => (
+              <li>
+                <time class="mono date" datetime={n.data.date.toISOString().slice(0, 10)}>{formatDate(n.data.date, lang)}</time>
+                <h2><a href={getRelativeLocaleUrl(lang, `notes/${slugOf(n)}`)}>{n.data.title}</a></h2>
+                <p class="summary">{n.data.summary}</p>
+              </li>
+            ))}
+          </ol>
+          <a class="mono rss" href={`${getRelativeLocaleUrl(lang)}rss.xml`}>{t('notes.rss')}</a>
+        </div>
+      </Terminal>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .notes { padding-block: clamp(40px, 8vw, 80px); min-height: calc(100svh - 61px); }
+  .stack { max-width: 860px; display: flex; flex-direction: column; gap: 24px; }
+  .back { align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; }
+  .body { padding: clamp(20px, 4vw, 32px); display: flex; flex-direction: column; gap: 20px; }
+  .title { font-size: clamp(36px, 5vw, 52px); line-height: 1; letter-spacing: -0.02em; font-weight: 700; }
+  .list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+  .list li { display: grid; gap: 6px; padding-block: 20px; border-bottom: 1px solid var(--line); }
+  .date { font-size: 13px; color: var(--muted); }
+  .list h2 { font-size: clamp(22px, 3vw, 28px); line-height: 1.2; }
+  .list h2 a { color: var(--text); }
+  .list h2 a:hover { color: var(--accent); }
+  .summary { color: var(--body); line-height: 1.6; }
+  .rss { align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; }
+</style>

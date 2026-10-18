@@ -75,7 +75,7 @@ for (const lang of langs) {
       ['man cd', t('term.manSynopsis'), 'cd [dir]'],
       ['man nope', t('term.noMan')],
       ['whoami', site.name, t('hero.role')],
-      ['ls', 'about.md', 'career.log', 'contact', 'projects/'],
+      ['ls', 'about.md', 'career.log', 'contact', 'projects/', 'notes/'],
       ['cat about.md', t('about.body')],
       ['cat career.log', career[0].role[lang], career[0].note[lang]],
       ['contact', site.email!, site.github],
@@ -83,7 +83,7 @@ for (const lang of langs) {
       ['cat projects', t('term.isDir')],
       ['cat', t('term.usage')],
       ['cd about.md', t('term.notDir')],
-      ['tree', '└── projects/', '│   └── README.md'],
+      ['tree', '├── projects/', '│   └── README.md', '└── notes/'],
       ['cd projects', ''],
       ['ls', 'gotdle/'],
       ['cat gotdle/README.md', '# Gotdle', 'https://github.com/robertvilladev/gotdle-vue3'],
@@ -124,6 +124,16 @@ for (const lang of langs) {
     await expect(log(page).getByRole('link', { name: site.email! })).toHaveAttribute('href', `mailto:${site.email}`);
   });
 }
+
+test('cat notes/<slug> prints the summary and links to the note', async ({ page }) => {
+  const { notes, fs } = await (await page.request.get('/terminal/en.json')).json();
+  const [slug] = Object.keys(notes);
+  await open(page);
+  await run(page, `cat notes/${slug}`);
+  await expect(log(page)).toContainText(fs.notes[slug].split('\n\n')[1]);
+  await log(page).getByRole('link', { name: notes[slug] }).click();
+  await page.waitForURL(`**${notes[slug]}`);
+});
 
 test('open, lang and history survive navigation', async ({ page }) => {
   await open(page);

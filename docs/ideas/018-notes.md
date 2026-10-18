@@ -2,7 +2,7 @@
 
 | Status | Phase | Category | Impact | Effort | Perf cost |
 | --- | --- | --- | --- | --- | --- |
-| ready | 4 · Depth | Content & data | H | M | none |
+| done | 4 · Depth | Content & data | H | M | none |
 
 **Depends on:** [005](005-structured-data.md)
 
@@ -28,7 +28,7 @@ The site's theme is 'I build things to understand how they work'. Short write-up
   - Code blocks: Shiki's `css-variables` theme, its `--astro-code-*` variables mapped to the design tokens in `global.css`, so code follows all six themes. Each `<pre>` gets terminal chrome (bar and dots) from CSS only.
   - Prose is readable at 375 px: long code scrolls inside its block, never the page. No new client JS.
 - **Wiring.**
-  - A `./notes` nav link (es `./notas`, ca `./notes`). The header still fits at 375 px.
+  - A `./notes` nav link (es `./notas`, ca `./notes`). The header still fits at 375 px: like the other nav links it's hidden on phones, so the footer links to the notes too.
   - RSS through `@astrojs/rss`: `/rss.xml`, `/es/rss.xml`, `/ca/rss.xml`, each linked from `<head>` with `rel="alternate" type="application/rss+xml"`.
   - JSON-LD `TechArticle` whose `author` is the Person `@id` (005).
   - A per-note OG card from the existing og route (006).
@@ -42,12 +42,12 @@ The site's theme is 'I build things to understand how they work'. Short write-up
 No client JS on note pages except shared motion. Plus the budget and rules in [ARCHITECTURE.md](../ARCHITECTURE.md).
 
 ## Done when
-- [ ] Notes collection with a test that every note exists in every locale
-- [ ] Index and note pages in every locale, readable at 375 px, code blocks follow every theme
-- [ ] `./notes` nav link; header fits at 375 px
-- [ ] RSS feed per locale, linked from `<head>`
-- [ ] `TechArticle` JSON-LD, OG card and hreflang on note pages
-- [ ] sudoku-2077's project page links to the note
-- [ ] `notes/` in the terminal; `cat notes/<slug>` links to the note; lazy budget holds
-- [ ] First note published in en, es and ca
-- [ ] e2e tests cover the above
+- [x] Notes collection with a test that every note exists in every locale
+- [x] Index and note pages in every locale, readable at 375 px, code blocks follow every theme
+- [x] `./notes` nav link; header fits at 375 px
+- [x] RSS feed per locale, linked from `<head>`
+- [x] `TechArticle` JSON-LD, OG card and hreflang on note pages
+- [x] sudoku-2077's project page links to the note
+- [x] `notes/` in the terminal; `cat notes/<slug>` links to the note; lazy budget holds
+- [x] First note published in en, es and ca
+- [x] e2e tests cover the above

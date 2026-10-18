@@ -1,4 +1,5 @@
 ---
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import { t as useT, type Lang } from '@/i18n/ui';
 import { site } from '@/config';
 
@@ -11,6 +12,7 @@ const profiles = [['github', site.github], ['linkedin', site.linkedin]].filter((
   <div class="container footer__row">
     <span>© {new Date().getFullYear()} {site.name} · {t('footer.built')}</span>
     <ul class="footer__links">
+      <li><a href={getRelativeLocaleUrl(Astro.props.lang, 'notes')}>{t('nav.notes')}</a></li>
       {profiles.map(([label, href]) => <li><a href={href} rel="me noopener" target="_blank">{label}</a></li>)}
     </ul>
     <span>{t('footer.exit')}</span>
