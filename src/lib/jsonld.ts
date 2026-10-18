@@ -1,5 +1,6 @@
 import { site } from '@/config';
 import { langs, t as useT, type Lang } from '@/i18n/ui';
+import type { Repo } from '@/lib/github';
 import type { Project } from '@/lib/projects';
 
 const personId = (origin: URL) => new URL('/#person', origin).href;
@@ -18,14 +19,15 @@ export function personLd(lang: Lang, origin: URL, url: string) {
   };
 }
 
-export function projectLd(lang: Lang, origin: URL, url: string, { data }: Project) {
+export function projectLd(lang: Lang, origin: URL, url: string, { data }: Project, gh: Repo | null) {
   return {
     '@context': 'https://schema.org',
     '@type': 'SoftwareSourceCode',
     name: data.title,
     description: data.summary,
     url,
-    codeRepository: data.repo,
+    ...(!data.private && { codeRepository: data.repo }),
+    ...(gh && { dateModified: gh.pushedAt, ...(gh.languages[0] && { programmingLanguage: gh.languages[0].name }) }),
     keywords: data.stack,
     inLanguage: lang,
     author: { '@id': personId(origin) },

@@ -82,7 +82,7 @@ function build(data: TermData): Ctx {
   const candidates = (words: string[]) =>
     words.length === 1
       ? [...commands.values()].filter((c) => !c.hidden).map((c) => c.name)
-      : (commands.get(words[0])?.complete?.(words.at(-1)!, ctx) ?? []);
+      : (commands.get(words[0])?.complete?.(words.at(-1)!, ctx, words) ?? []);
 
   async function run(line: string) {
     echo(line);

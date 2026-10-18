@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { langs, langParam, type Lang } from '@/i18n/ui';
+import { defaultLang, langs, langParam, type Lang } from '@/i18n/ui';
+import { github, repoName } from '@/lib/github';
 
 export type Project = CollectionEntry<'projects'>;
 
@@ -19,3 +20,11 @@ export async function projectPaths() {
   );
   return perLang.flat();
 }
+
+/** Repos fetched at build time (009): every public project plus this site. */
+export const PORTFOLIO_REPO = 'robertvilladev/robertvilladev-portfolio';
+export const githubData = async () =>
+  github([...(await getProjects(defaultLang)).filter((p) => !p.data.private).map((p) => repoName(p.data.repo)), PORTFOLIO_REPO]);
+
+/** A project's GitHub data, or null (private, offline, `GITHUB_DATA=off`). */
+export const repoData = async ({ data }: Project) => (data.private ? null : ((await githubData())[repoName(data.repo)] ?? null));

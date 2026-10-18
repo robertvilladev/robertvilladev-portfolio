@@ -11,7 +11,7 @@ src/
   content/projects/<lang>/  one markdown file per project per language
   data/career.ts            timeline entries, localized inline
   i18n/ui.ts                locales (single source) + UI strings + t()
-  lib/                      data helpers used by pages (projects.ts)
+  lib/                      data helpers used by pages (projects.ts, jsonld.ts, github.ts: build-time GitHub data)
   layouts/Base.astro        <head>, SEO, theme pre-paint, page shell, client scripts
   pages/[...lang]/          every route, generated for every locale
   components/
@@ -36,6 +36,11 @@ Imports use the `@/` alias (`@/components/ui/Terminal.astro`), never `../`.
 **Content**
 - New project: one `.md` per language in `content/projects/<lang>/`. The schema in `content.config.ts` validates it at build time.
 - Personal data and links only in `config.ts`.
+- `private: true` on a project: its repo is never linked (page, card, terminal, JSON-LD) or fetched.
+
+**GitHub data (009)**
+- Fetched once per build by `lib/github.ts` through `githubData()`/`repoData()` in `lib/projects.ts`. Missing data must fall back to the static markup, never fail the build.
+- `GITHUB_TOKEN` (optional) raises the API rate limit; `GITHUB_DATA=off` skips the network (CI e2e builds with it). `.github/workflows/rebuild.yml` redeploys daily.
 
 **Motion**
 - Content is visible without JS. Scripts only hide what they're about to animate.
