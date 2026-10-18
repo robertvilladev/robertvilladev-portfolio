@@ -17,6 +17,16 @@ const span = (from: string, to: string | Localized): Localized =>
 // Source: LinkedIn experience. Newest first; the last entry renders as the root commit.
 export const career: CareerEntry[] = [
   {
+    hash: 'a7c3e58',
+    period: span('2026.08', now),
+    role: { en: 'Software Engineer @ Aurela', es: 'Software Engineer @ Aurela', ca: 'Software Engineer @ Aurela' },
+    note: {
+      en: 'Barcelona. Online therapy platform. Full stack: Next.js web app, Django API and back office, calendar and video-call integrations, payments, jobs. Azure, SQL, Sentry, Mixpanel, GitHub Actions.',
+      es: 'Barcelona. Plataforma de terapia online. Full stack: web en Next.js, API y back office en Django, integraciones de calendario y videollamada, pagos y jobs. Azure, SQL, Sentry, Mixpanel y GitHub Actions.',
+      ca: 'Barcelona. Plataforma de teràpia en línia. Full stack: web en Next.js, API i back office en Django, integracions de calendari i videotrucada, pagaments i jobs. Azure, SQL, Sentry, Mixpanel i GitHub Actions.',
+    },
+  },
+  {
     hash: 'e4f2a91',
     period: span('2024.11', now),
     role: { en: 'Full Stack Engineer @ ERNI', es: 'Full Stack Engineer @ ERNI', ca: 'Full Stack Engineer @ ERNI' },
