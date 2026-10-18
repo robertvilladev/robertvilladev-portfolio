@@ -18,7 +18,7 @@ test('mouse move creates four squares and the head sits on the 8px grid', async 
 
 test('hovering a link grows the head', async ({ page }) => {
   await page.goto('/');
-  const box = (await page.locator('main a').first().boundingBox())!;
+  const box = (await page.locator('header a:visible').first().boundingBox())!;
   await move(page, box.x + 4, box.y + 4);
   await expect(page.locator('.trail')).toHaveAttribute('data-grow', '');
   await move(page, 5, 5);
