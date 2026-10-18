@@ -57,7 +57,7 @@ Each technique has a weight and a tier. The weights are roughly ten times the Su
 | Hard | X-Wing, naked triple, Swordfish, hidden triple, XY-Wing, XYZ-Wing, naked quad |
 | Hardcore | the solver gets stuck |
 
-They don't follow the Sudoku Explainer order exactly. X-Wing rates lower than a hidden pair there, but to most players it looks like an advanced pattern, so I put it in Hard with the triples, Swordfish and the wings.
+They don't follow the Sudoku Explainer order exactly. Going by the weights in the code, X-Wing ranks below a hidden pair (I took that from the weights, I didn't check it against Sudoku Explainer itself), but to most players it looks like an advanced pattern, so I put it in Hard with the triples, Swordfish and the wings.
 
 The classifier itself is short. The tier is the highest tier of any technique used. The score adds up weight times number of uses, so it also grows with how many hard steps a puzzle needs, which helps to order puzzles inside a tier:
 
@@ -102,7 +102,7 @@ export function countSolutions(grid: Grid, limit = 2): number {
 
 ## Aiming at a tier
 
-You can't ask a generator for a hard puzzle directly. You can only make one and grade it. What the code does is aim. For Easy it picks a random target between 36 and 45 givens and stops digging when it gets there. Each cell is only tried once, so if the remaining cells can't be removed without a second solution, the puzzle keeps more givens than the target. For the other tiers it digs until no more digits can be removed without losing uniqueness. If the result lands harder than the target, it adds givens back from the solution, one at a time, only in cells the logical solver got stuck on, and keeps each one only if the puzzle stays at or above the target tier. Adding a given can never break uniqueness, so this is safe.
+You can't ask a generator for a hard puzzle directly. You can only make one and grade it. What the code does is aim. For Easy it picks a random target between 36 and 45 givens and usually stops digging when it gets there. Each cell is only tried once, so if the remaining cells can't be removed without a second solution, the puzzle keeps more givens than the target. For the other tiers it digs until no more digits can be removed without losing uniqueness. If the result lands harder than the target, it adds givens back from the solution, one at a time, only in cells the logical solver got stuck on, and keeps each one only if the puzzle stays at or above the target tier. Adding a given can never break uniqueness, so this is safe.
 
 The result is still graded honestly. If a puzzle aimed at Hard comes out Medium, it goes into the Medium pool.
 
