@@ -9,13 +9,25 @@ const konami = async (page: Page, b = 'b', a = 'a') => {
 
 test('the code sets data-glitch and it clears after about 5 s', async ({ page }) => {
   await page.goto('/');
+  // Times the effect in the page, so a slow test runner doesn't skew it.
+  const duration = page.evaluate(
+    () =>
+      new Promise<number>((done) => {
+        let start = 0;
+        new MutationObserver(() => {
+          const on = 'glitch' in document.documentElement.dataset;
+          if (on && !start) start = performance.now();
+          if (!on && start) done(performance.now() - start);
+        }).observe(document.documentElement, { attributeFilter: ['data-glitch'] });
+      }),
+  );
   await page.keyboard.press('ArrowUp'); // a false start still matches
   await konami(page);
   await expect(html(page)).toHaveAttribute('data-glitch');
   await expect(page.locator('.sparkle-layer span').first()).toBeAttached();
-  await page.waitForTimeout(4000);
-  await expect(html(page)).toHaveAttribute('data-glitch');
-  await expect(html(page)).not.toHaveAttribute('data-glitch', { timeout: 2000 });
+  const ms = await duration;
+  expect(ms).toBeGreaterThan(4900);
+  expect(ms).toBeLessThan(5500);
 });
 
 test('B and A count in uppercase too', async ({ page }) => {
