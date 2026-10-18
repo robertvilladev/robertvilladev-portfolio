@@ -38,6 +38,7 @@ const urlFor = (l: Lang) => new URL(getRelativeLocaleUrl(l, path), Astro.site).h
     <link rel="canonical" href={urlFor(lang)} />
     {langs.map((l) => <link rel="alternate" hreflang={l} href={urlFor(l)} />)}
     <link rel="alternate" hreflang="x-default" href={urlFor(defaultLang)} />
+    {path === '' && <link rel="expect" href="#projects" blocking="render" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content="#0c0a18" />
@@ -59,6 +60,35 @@ const urlFor = (l: Lang) => new URL(getRelativeLocaleUrl(l, path), Astro.site).h
         document.documentElement.dataset.theme =
           saved ?? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
       } catch {}
+    </script>
+    <script is:inline>
+      // View-transition morph targets (008). Runs before motion.ts, which must not hide the target.
+      (() => {
+        const slugOf = (u) => /\/projects\/([^/]+)\/?$/.exec(new URL(u).pathname)?.[1];
+        let named; // one home card carries names at a time; duplicates would cancel the transition
+        const name = (slug) => {
+          for (const s of [named, slug]) {
+            const li = document.getElementById('p-' + s);
+            for (const [sel, n] of [['.card', 'card'], ['.card__title', 'title'], ['.card__shot', 'shot']])
+              li?.querySelector(sel)?.style.setProperty('view-transition-name', s === slug ? `${n}-${s}` : '');
+          }
+          named = slug;
+        };
+        const act = window.navigation?.activation;
+        const slug = slugOf(location.href) || (act?.from && slugOf(act.from.url));
+        if (slug && act?.from && act.navigationType !== 'reload' && matchMedia('(prefers-reduced-motion: no-preference)').matches)
+          document.documentElement.dataset.vt = slug;
+        addEventListener('pageswap', (e) => {
+          const to = e.activation?.entry.url;
+          if (e.viewTransition && to && slugOf(to)) name(slugOf(to));
+        });
+        addEventListener('pagereveal', (e) => {
+          const from = window.navigation?.activation?.from?.url; // read now: a bfcache restore has a new activation
+          if (!e.viewTransition || slugOf(location.href) || !from || !slugOf(from)) return;
+          name(slugOf(from));
+          e.viewTransition.finished.then(() => name());
+        });
+      })();
     </script>
   </head>
   <body>
