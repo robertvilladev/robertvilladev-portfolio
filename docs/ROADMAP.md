@@ -49,5 +49,5 @@ Every planned feature, in build order. Each row links to its spec in [ideas/](id
 | # | Item | Category | Impact | Effort | Perf | Depends on | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 017 | [Playable sudoku demo](ideas/017-playable-sudoku.md) | Interaction | H | L | low | [011](ideas/011-project-media.md) | idea |
-| 018 | [Notes: how things work](ideas/018-notes.md) | Content & data | H | M | none | [005](ideas/005-structured-data.md) | done |
+| 018 | [Notes: how things work](ideas/018-notes.md) | Content & data | H | M | none | [005](ideas/005-structured-data.md) | ready |
 | 019 | [Privacy-friendly analytics](ideas/019-privacy-analytics.md) | Foundation | M | S | low | [002](ideas/002-deploy-and-ci.md) | idea |
