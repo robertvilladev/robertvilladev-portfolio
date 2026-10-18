@@ -7,6 +7,7 @@ import Header from '@/components/layout/Header.astro';
 import Background from '@/components/layout/Background.astro';
 import Footer from '@/components/layout/Footer.astro';
 import { languages, langs, defaultLang, t as useT, type Lang } from '@/i18n/ui';
+import { themeNames } from '@/lib/themes';
 
 interface Props {
   lang: Lang;
@@ -53,12 +54,13 @@ const urlFor = (l: Lang) => new URL(getRelativeLocaleUrl(l, path), Astro.site).h
     <meta property="og:image:alt" content={pageTitle} />
     <meta name="twitter:card" content="summary_large_image" />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
-    <script is:inline>
-      // Runs before paint so the saved theme never flashes.
+    <script is:inline define:vars={{ themeNames }}>
+      // Runs before paint so the saved theme never flashes. An unknown saved value falls back to the system.
       try {
         const saved = localStorage.getItem('theme');
-        document.documentElement.dataset.theme =
-          saved ?? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.dataset.theme = themeNames.includes(saved)
+          ? saved
+          : matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
       } catch {}
     </script>
     <script is:inline>

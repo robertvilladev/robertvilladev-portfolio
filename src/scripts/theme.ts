@@ -2,9 +2,7 @@
 // The initial theme is set by the inline script in Base.astro before paint.
 const root = document.documentElement;
 const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
-
-/** Every theme name tokens.css defines. 014 adds its hidden themes here. */
-export const themes = ['dark', 'light'];
+const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
 
 const sync = () => {
   const theme = root.dataset.theme ?? 'dark';
@@ -13,6 +11,7 @@ const sync = () => {
     const name = b.querySelector('[data-theme-name]');
     if (name) name.textContent = theme;
   });
+  meta?.setAttribute('content', getComputedStyle(root).getPropertyValue('--bg').trim());
 };
 
 export function setTheme(name: string) {
@@ -21,6 +20,7 @@ export function setTheme(name: string) {
   sync();
 }
 
-buttons.forEach((b) => b.addEventListener('click', () => setTheme(root.dataset.theme === 'light' ? 'dark' : 'light')));
+// From a hidden theme, one click goes back to dark.
+buttons.forEach((b) => b.addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark')));
 
 sync();

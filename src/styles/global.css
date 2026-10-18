@@ -99,3 +99,29 @@ a:hover { color: var(--accent-2); }
   /* The terminal overlay reopens on the next page itself; never ghost it. */
   ::view-transition-group(site-terminal) { display: none; }
 }
+
+/* Hidden theme accents (014). Their background layers live in Background.astro. */
+:root[data-theme='matrix'] :is(h1, h2) { text-shadow: 0 0 14px var(--glow); }
+:root[data-theme='amber'] .cursor { text-shadow: 0 0 6px var(--accent), 0 0 18px var(--accent); }
+:root[data-theme='synthwave'] :is(h1, h2) { text-shadow: 0 0 10px var(--glow), 0 0 28px var(--glow); }
+:root[data-theme='synthwave'] div.term { border-color: var(--accent); box-shadow: 0 0 0 1px var(--glow), 0 0 26px var(--glow); }
+:root[data-theme='night-city'] div.term {
+  --cut: 18px;
+  border-color: var(--accent);
+  clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut)));
+}
+/* ~150 ms glitch slice every 7 s: an inverted, shifted band over the heading (one change per 7 s, well under 3 Hz). */
+:root[data-theme='night-city'] :is(h1, h2) { position: relative; }
+:root[data-theme='night-city'] :is(h1, h2)::after {
+  content: ''; position: absolute; inset: 38% -6px 44%; opacity: 0; pointer-events: none;
+  backdrop-filter: invert(1) hue-rotate(160deg); border-left: 3px solid var(--accent-2);
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-theme='night-city'] :is(h1, h2)::after { animation: glitch 7s steps(1, end) infinite; }
+  :root[data-theme='night-city'] h2::after { animation-delay: -3.1s; }
+}
+@keyframes glitch {
+  97.8% { opacity: 1; transform: translateX(-8px); }
+  98.9% { opacity: 1; transform: translateX(6px); clip-path: inset(30% 0 0); }
+  100% { opacity: 0; }
+}

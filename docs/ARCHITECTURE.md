@@ -11,7 +11,7 @@ src/
   content/projects/<lang>/  one markdown file per project per language
   data/career.ts            timeline entries, localized inline
   i18n/ui.ts                locales (single source) + UI strings + t()
-  lib/                      data helpers used by pages (projects.ts, jsonld.ts, github.ts: build-time GitHub data)
+  lib/                      data helpers (projects.ts, jsonld.ts, github.ts: build-time GitHub data, themes.ts: the theme list)
   layouts/Base.astro        <head>, SEO, theme pre-paint, page shell, client scripts
   pages/[...lang]/          every route, generated for every locale
   components/
@@ -21,7 +21,7 @@ src/
   pages/terminal/           /terminal/<lang>.json: the interactive terminal's data, built from site content
   scripts/                  client-side TS: theme, motion, sparkle
   scripts/terminal/         interactive terminal (007): tiny first-paint loader, lazy shell, one file per command
-  styles/                   tokens.css (design tokens, dark + light), global.css (utilities)
+  styles/                   tokens.css (design tokens: dark, light + hidden themes), global.css (utilities)
 ```
 
 Imports use the `@/` alias (`@/components/ui/Terminal.astro`), never `../`.
@@ -49,7 +49,7 @@ Imports use the `@/` alias (`@/components/ui/Terminal.astro`), never `../`.
 - Don't put two tweens on the same property of the same element (CSS animation + GSAP, or reveal + parallax).
 
 **Styling**
-- Colors only through tokens in `styles/tokens.css`; every token has a light-theme value.
+- Colors only through tokens in `styles/tokens.css`; every token has a value in every theme listed in `lib/themes.ts` (`styles/tokens.test.ts` checks it and the WCAG AA contrast).
 - Component styles are scoped `<style>` in the component. Shared utilities go in `global.css`.
 
 **Terminal**

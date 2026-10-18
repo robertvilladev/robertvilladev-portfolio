@@ -1,5 +1,6 @@
 ---
 // Ambient layer: slow binary rain, a few blinking pixels and a faint scan sweep. CSS only.
+// Hidden themes (014) add their own layer, display: none unless that theme is active.
 const rain = [
   { left: '6%', dur: 28, delay: 0, bits: '0110100101110010' },
   { left: '19%', dur: 36, delay: -12, bits: '1001011101000110' },
@@ -14,12 +15,26 @@ const blips = [
   { top: '82%', left: '7%', delay: -2.6, alt: false },
   { top: '38%', left: '80%', delay: -0.8, alt: true },
 ];
+// matrix: katakana mixed with binary, the last (lowest) glyph is the bright lead.
+const kana = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ';
+const matrix = Array.from({ length: 14 }, (_, i) => ({
+  left: `${2 + i * 7}%`,
+  dur: 12 + ((i * 7) % 13),
+  delay: -((i * 3.3) % 16),
+  glyphs: Array.from({ length: 16 }, (_, j) => ((i + j) % 3 ? kana[(i * 11 + j * 7) % kana.length] : (i + j) % 2)).join(''),
+}));
 ---
 
 <div class="bg" aria-hidden="true">
   {rain.map((r) => <span class="rain mono" style={`left:${r.left};animation-duration:${r.dur}s;animation-delay:${r.delay}s`}>{r.bits}</span>)}
   {blips.map((b) => <span class:list={['blip', { 'blip--alt': b.alt }]} style={`top:${b.top};left:${b.left};animation-delay:${b.delay}s`} />)}
   <span class="sweep" />
+  <div class="th th--matrix">
+    {matrix.map((m) => <span class="mx mono" style={`left:${m.left};animation-duration:${m.dur}s;animation-delay:${m.delay}s`}>{m.glyphs.slice(0, -1)}<b>{m.glyphs.at(-1)}</b></span>)}
+  </div>
+  <div class="th th--amber" />
+  <div class="th th--synthwave"><span class="sun" /><span class="floor"><span class="lines" /></span></div>
+  <div class="th th--night-city"><span class="hud" /><span class="hazard" /></div>
 </div>
 
 <style>
@@ -38,5 +53,59 @@ const blips = [
     animation: sweep 9s linear infinite;
   }
   @keyframes sweep { from { transform: translateY(-120px); } to { transform: translateY(100vh); } }
-  @media (prefers-reduced-motion: reduce) { .rain, .blip, .sweep { display: none; } }
+
+  /* Hidden theme layers (014) */
+  .th { display: none; position: absolute; inset: 0; }
+  :global(:root[data-theme='matrix']) .th--matrix,
+  :global(:root[data-theme='amber']) .th--amber,
+  :global(:root[data-theme='synthwave']) .th--synthwave,
+  :global(:root[data-theme='night-city']) .th--night-city { display: block; }
+
+  .mx {
+    position: absolute; top: 0; writing-mode: vertical-rl; text-orientation: upright; font-size: 15px; line-height: 1;
+    color: var(--rain); user-select: none; animation: rain linear infinite;
+  }
+  .mx b { font-weight: 400; color: var(--text); text-shadow: 0 0 8px var(--accent); opacity: 0.55; }
+
+  .th--amber {
+    background:
+      repeating-linear-gradient(transparent 0 2px, rgb(0 0 0 / 0.28) 2px 3px),
+      radial-gradient(ellipse at center, transparent 55%, rgb(0 0 0 / 0.6));
+    animation: flicker 6s ease-in-out infinite alternate;
+  }
+  @keyframes flicker { to { opacity: 0.96; } }
+
+  .sun {
+    position: absolute; left: 50%; top: 58%; width: min(44vmin, 360px); aspect-ratio: 1; border-radius: 50%;
+    transform: translate(-50%, -100%); opacity: 0.32;
+    background: linear-gradient(var(--accent-2), var(--accent) 70%);
+    mask: linear-gradient(#000 52%, transparent 52% 56%, #000 56% 66%, transparent 66% 71%, #000 71% 79%, transparent 79% 85%, #000 85%);
+  }
+  .floor { position: absolute; inset: 58% 0 0; overflow: hidden; perspective: 260px; }
+  .floor::before { content: ''; position: absolute; inset: 0 0 auto; height: 2px; background: var(--accent); box-shadow: 0 0 18px 4px var(--glow); }
+  .lines {
+    position: absolute; left: -50%; right: -50%; top: 0; height: 200%; transform-origin: top; opacity: 0.4;
+    background:
+      linear-gradient(var(--accent) 1px, transparent 1px) 0 0 / 48px 48px,
+      linear-gradient(90deg, var(--accent) 1px, transparent 1px) 0 0 / 48px 48px;
+    mask: linear-gradient(transparent, #000 30%);
+    animation: floor 2.4s linear infinite;
+  }
+  @keyframes floor { from { transform: rotateX(62deg) translateY(-48px); } to { transform: rotateX(62deg) translateY(0); } }
+
+  .hud {
+    position: absolute; inset: 0; opacity: 0.6;
+    background:
+      linear-gradient(rgb(0 240 255 / 0.05) 1px, transparent 1px) 0 0 / 64px 64px,
+      linear-gradient(90deg, rgb(0 240 255 / 0.05) 1px, transparent 1px) 0 0 / 64px 64px;
+  }
+  .hazard {
+    position: absolute; inset: auto 0 0; height: 10px; opacity: 0.85;
+    background: repeating-linear-gradient(-45deg, var(--accent) 0 12px, transparent 12px 24px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rain, .blip, .sweep { display: none; }
+    .mx, .th--amber, .lines { animation: none; }
+  }
 </style>
