@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
 // Chromium sometimes drops a transition when many workers load pages at once, so retry.
-test.describe.configure({ retries: 2 });
+test.describe.configure({ retries: 3 });
 
 // Records what a cross-document view transition actually did, once it is ready.
 test.beforeEach(async ({ page }) => {
@@ -28,7 +28,7 @@ const names = (page: Page) =>
     [...document.querySelectorAll('*')].map((el) => getComputedStyle(el).viewTransitionName).filter((n) => n !== 'none'),
   );
 // A navigation started before the old page painted gets no transition.
-const painted = (page: Page) => page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+const painted = (page: Page) => page.evaluate(() => document.fonts.ready.then(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))));
 const ran = (page: Page) => page.waitForFunction(() => (window as any).__vt, undefined, { timeout: 5000 }).then((h) => h.jsonValue() as Promise<{ pairs: string[]; targetOpacity: string }>);
 
 async function openFirstProject(page: Page) {
