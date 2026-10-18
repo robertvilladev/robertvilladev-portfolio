@@ -6,6 +6,7 @@ import { getRelativeLocaleUrl } from 'astro:i18n';
 import Header from '@/components/layout/Header.astro';
 import Background from '@/components/layout/Background.astro';
 import Footer from '@/components/layout/Footer.astro';
+import Boot from '@/components/layout/Boot.astro';
 import { languages, langs, defaultLang, t as useT, type Lang } from '@/i18n/ui';
 import { themeNames } from '@/lib/themes';
 
@@ -64,6 +65,15 @@ const urlFor = (l: Lang) => new URL(getRelativeLocaleUrl(l, path), Astro.site).h
       } catch {}
     </script>
     <script is:inline>
+      // First-visit boot log (015): home only, once, never under reduced motion or blocked storage. Flag saved up front.
+      try {
+        if (/^\/(?:(?:es|ca)\/)?$/.test(location.pathname) && !localStorage.booted && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          localStorage.booted = 1;
+          document.documentElement.dataset.boot = '';
+        }
+      } catch {}
+    </script>
+    <script is:inline>
       // View-transition morph targets (008). Runs before motion.ts, which must not hide the target.
       (() => {
         const slugOf = (u) => /\/projects\/([^/]+)\/?$/.exec(new URL(u).pathname)?.[1];
@@ -95,6 +105,7 @@ const urlFor = (l: Lang) => new URL(getRelativeLocaleUrl(l, path), Astro.site).h
   </head>
   <body>
     <a class="skip-link" href="#main">{t('nav.skip')}</a>
+    <Boot />
     <Background />
     <Header lang={lang} path={path} />
     <main id="main">
@@ -102,6 +113,7 @@ const urlFor = (l: Lang) => new URL(getRelativeLocaleUrl(l, path), Astro.site).h
     </main>
     <Footer lang={lang} />
     <script>
+      import '@/scripts/boot';
       import '@/scripts/theme';
       import '@/scripts/terminal';
       import '@/scripts/motion';

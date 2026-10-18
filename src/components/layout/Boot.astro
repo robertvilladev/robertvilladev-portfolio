@@ -1,0 +1,43 @@
+---
+// First-visit boot log (015). Always in the DOM so `reboot` works on any page; CSS shows it only under html[data-boot].
+import { latest } from '@/lib/github';
+import { getProjects, githubData } from '@/lib/projects';
+
+const count = (await getProjects('en')).length;
+const last = latest(await githubData());
+const lines = [
+  'RV-BIOS v1.0 · POST',
+  'memory test ......... 640K ok',
+  'cpu ................. ok',
+  'display ............. ok',
+  `mount /projects ..... ${count} found`,
+  ...(last ? [`git HEAD ............ ${last.sha.slice(0, 7)} (${last.repo})`] : []),
+  'network ............. ok',
+  'starting portfolio ..',
+  'ready.',
+];
+---
+
+<div class="boot mono" aria-hidden="true" data-no-sparkle>
+  <ol>{lines.map((l, i) => <li style={`--i:${i}`}>{l}</li>)}</ol>
+</div>
+
+<style is:global>
+  .boot { display: none; }
+  html[data-boot] .boot {
+    display: block; position: fixed; top: 16px; left: 16px; z-index: 200;
+    width: min(380px, calc(100vw - 32px));
+    background: var(--bg); color: var(--accent); border: 1px solid var(--accent);
+    box-shadow: 4px 4px 0 var(--accent-2);
+    font-size: 13px; line-height: 1.6; overflow: hidden;
+    animation: boot-off 0.25s ease-in 1.5s both;
+  }
+  .boot ol { margin: 0; padding: 12px 14px; list-style: none; white-space: pre; }
+  .boot li { opacity: 0; animation: boot-line 0.01s steps(1) calc(var(--i) * 0.15s) forwards; }
+  .boot li:last-child { color: var(--accent-2); }
+  @keyframes boot-line { to { opacity: 1; } }
+  @keyframes boot-off {
+    70% { transform: scaleY(0.01); opacity: 1; }
+    to { transform: scaleY(0.01); opacity: 0; visibility: hidden; }
+  }
+</style>
