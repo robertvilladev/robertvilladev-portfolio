@@ -36,7 +36,7 @@ Zero runtime cost: no new client JS outside the lazy terminal chunk (≤ 10 KB).
 
 ## Open questions
 - Show stars at all? No. Every repo has 0–1 stars; they're not fetched or shown.
-- Private repos (mancos-gg, omdb-explorer, veggie-vendetta)? `private: true` in their content: no repo link (card, page, terminal, JSON-LD `codeRepository`), a localized tag, never fetched.
+- Private repos (mancos-gg, omdb-explorer)? `private: true` in their content: no repo link (card, page, terminal, JSON-LD `codeRepository`), a localized tag, never fetched.
 
 ## Done when
 - [x] Cards show live data
