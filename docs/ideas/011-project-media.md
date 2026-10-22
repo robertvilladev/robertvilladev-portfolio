@@ -25,7 +25,7 @@ Images via `astro:assets` `<Picture>` (AVIF/WebP, sized). Video as `<video muted
 Lazy below the fold, explicit dimensions (CLS 0), no autoplay under reduced motion. Plus the budget and rules in [ARCHITECTURE.md](../ARCHITECTURE.md).
 
 ## Open questions
-- Screenshots only, or short loops for games (veggie-vendetta, sudoku)?
+- Screenshots only, or short loops for games (chloropunk, sudoku)?
 
 ## Done when
 - [ ] Every project has a cover; Lighthouse performance stays ≥ 95
