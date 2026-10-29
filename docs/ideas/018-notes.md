@@ -35,7 +35,7 @@ The site's theme is 'I build things to understand how they work'. Short write-up
   - hreflang alternates come from Base.astro, as on every page. The sitemap picks the pages up on its own.
   - A project page links to every note whose `project` is its slug.
 - **Terminal.** A `notes/` directory with one file per note (title and summary only). `cat notes/<slug>` prints the summary and a link to the note page. Stays inside the lazy terminal budget.
-- **First topic.** Sudoku difficulty grading, from the public sudoku-2077 repo: graded by the techniques a puzzle needs, not by its givens. ECS in veggie-vendetta can come later.
+- **First topic.** Sudoku difficulty grading, from the public sudoku-2077 repo: graded by the techniques a puzzle needs, not by its givens. Balance-by-simulation in chloropunk can come later.
 - **Voice.** First person, plain words, the way the landing copy (020) talks. Terminal flavor only in microcopy.
 
 ## Guardrails
